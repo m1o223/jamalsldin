@@ -78,7 +78,29 @@
   <div class="internal-shell" id="internal-shell" data-section="home" hidden>
     <main class="page-stage" id="page-stage">
       <div class="page-track" id="page-track">
-        <section class="page-panel" id="page-home" aria-labelledby="home-title"><h1 id="home-title" tabindex="-1">الصفحة الرئيسية</h1></section>
+        <section class="page-panel" id="page-home" aria-label="الرئيسية">
+          <article class="prayer-card" aria-labelledby="home-title">
+            <div class="prayer-card-header">
+              <p class="prayer-city"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>لم يتم اختيار مدينة</span></p>
+              <p class="prayer-date"><span>التاريخ</span><bdi>—</bdi></p>
+            </div>
+            <div class="upcoming-prayer">
+              <h2 id="home-title" tabindex="-1">الصلاة القادمة</h2>
+              <div class="upcoming-main">
+                <strong class="upcoming-name" aria-label="اسم الصلاة غير متاح">—</strong>
+                <strong class="upcoming-time" aria-label="موعد الصلاة غير متاح"><bdi dir="ltr">—:—</bdi></strong>
+              </div>
+              <p class="prayer-remaining"><span>الوقت المتبقي</span><bdi aria-label="الوقت المتبقي غير متاح">—</bdi></p>
+            </div>
+            <dl class="daily-prayers" aria-label="مواقيت صلوات اليوم">
+              <div class="prayer-row"><dt>الفجر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row"><dt>الظهر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row"><dt>العصر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row"><dt>المغرب</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row"><dt>العشاء</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+            </dl>
+          </article>
+        </section>
         <section class="page-panel" id="page-quran" aria-labelledby="quran-title" aria-hidden="true" inert><h1 id="quran-title" tabindex="-1">القرآن</h1></section>
         <section class="page-panel" id="page-prayer" aria-labelledby="prayer-title" aria-hidden="true" inert><h1 id="prayer-title" tabindex="-1">الصلاة</h1></section>
       </div>
