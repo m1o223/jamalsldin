@@ -6,7 +6,7 @@
   "outputDirectory": "dist",
   "git": { "deploymentEnabled": true },
   "rewrites": [
-    { "source": "/:section(home|quran|prayer|profile|settings)", "destination": "/index.html" }
+    { "source": "/:section(home|quran|prayer|ai|profile|settings)", "destination": "/index.html" }
   ],
   "headers": [
     {

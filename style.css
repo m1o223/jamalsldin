@@ -253,6 +253,7 @@ body.is-internal { overflow: hidden; }
 .internal-shell.is-ready .page-track { transition: transform 260ms cubic-bezier(.4,0,.2,1); }
 .internal-shell[data-section="quran"] .page-track { transform: translateX(100%); }
 .internal-shell[data-section="prayer"] .page-track { transform: translateX(200%); }
+.internal-shell[data-section="ai"] .page-track { transform: translateX(300%); }
 .page-panel, .detail-page {
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -262,6 +263,7 @@ body.is-internal { overflow: hidden; }
 }
 .page-panel:nth-child(2) { transform: translateX(-100%); }
 .page-panel:nth-child(3) { transform: translateX(-200%); }
+.page-panel:nth-child(4) { transform: translateX(-300%); }
 .page-stage h1 { margin: 0; font-size: 1.5rem; font-weight: 400; }
 .page-stage h1:focus { outline: none; }
 .detail-back { position: absolute; top: max(20px, env(safe-area-inset-top, 0px)); right: 20px; min-height: 44px; padding: 8px 18px; border: 1px solid #163F36; border-radius: 9999px; background: #F7F4ED; color: #163F36; cursor: pointer; }
@@ -282,16 +284,11 @@ body.is-internal { overflow: hidden; }
 .nav-indicator { position: absolute; right: 5px; top: 5px; bottom: 5px; width: calc((100% - 10px) / 4); border-radius: 9999px; background: #F7F4ED; pointer-events: none; transition: transform 260ms cubic-bezier(.4,0,.2,1); }
 .internal-shell[data-section="quran"] .nav-indicator { transform: translateX(-100%); }
 .internal-shell[data-section="prayer"] .nav-indicator { transform: translateX(-200%); }
+.internal-shell[data-section="ai"] .nav-indicator { transform: translateX(-300%); }
 .nav-item { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 0; padding: 2px; border: 0; border-radius: 9999px; background: none; color: #FFFFFF; font-size: .875rem; line-height: 1.3; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .nav-item[aria-current="page"] { color: #163F36; }
-.nav-item svg, .sheet-option svg, .sheet-close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .nav-item:active { opacity: .75; }
-.more-sheet { position: fixed; inset: auto 0 0; width: 100%; max-width: none; max-height: 75dvh; margin: 0; padding: 20px max(24px, calc((100% - 440px) / 2)) calc(24px + env(safe-area-inset-bottom, 0px)); border: 0; border-radius: 26px 26px 0 0; background: #F7F4ED; color: #163F36; overflow-y: auto; }
-.more-sheet::backdrop { background: rgba(22,63,54,.3); }
-.sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.sheet-header h2 { margin: 0; font-size: 1.25rem; font-weight: 500; }
-.sheet-close { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #163F36; border-radius: 50%; background: none; color: #163F36; cursor: pointer; }
-.sheet-option { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 60px; margin-top: 10px; padding: 14px 18px; border: 1px solid rgba(22,63,54,.2); border-radius: 16px; background: none; color: #163F36; font-size: 1rem; text-align: start; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .internal-shell.is-ready .page-track, .nav-indicator { transition: none; } }
 
 /* Home content scrolls independently, leaving the existing floating navigation clear. */
@@ -332,3 +329,7 @@ body.is-internal { overflow: hidden; }
 .prayer-card .prayer-preview-note { display: inline-block; margin-top: 14px; padding: 4px 10px; border: 1px solid rgba(255,255,255,.3); border-radius: 9999px; font-size: .8125rem; line-height: 1.7; }
 .upcoming-name { font-size: clamp(1.8rem, 7vw, 2.25rem); }
 .upcoming-time { font-size: clamp(2rem, 8vw, 2.5rem); font-weight: 600; }
+.home-toolbar { display: flex; direction: rtl; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.home-toolbar .home-account { margin: 0; }
+.home-settings svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.account-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }

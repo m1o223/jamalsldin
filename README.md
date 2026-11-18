@@ -19,7 +19,7 @@ Vercel project: `jamal-aldin`, team `m1o223s-projects`.
 Stable production domain: https://jamal-aldin.vercel.app
 Vercel uses framework Other, repository root, build command `npm run check && npm run build`, output directory `dist`, and the committed lockfile.
 
-Direct routes: `/home`, `/quran`, `/prayer`, `/profile`, `/settings`. Hash routes such as `/#home` also work. The start screen remains at `/`.
+Direct routes: `/home`, `/quran`, `/prayer`, `/ai`, `/profile`, `/settings`. Hash routes such as `/#home` also work. The start screen remains at `/`. The account state currently stays guest, including after preview Continue; profile/settings open the existing entry screen until a verified authentication source is integrated.
 
 The build intentionally publishes only `index.html`, `style.css`, and `script.js`. Earlier unrelated pages, image placeholders, local backups, environment files, caches, and deployment credentials are excluded. No environment variables are required.
 
