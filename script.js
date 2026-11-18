@@ -41,6 +41,7 @@ let currentRoute = null;
 let currentRouteKey = null;
 let lastMain = 'home';
 let readyFrame;
+let aiReturnRoute = 'home';
 
 emailButton.addEventListener('click', () => {
   options.hidden = true;
@@ -72,6 +73,11 @@ function renderScreen() {
   const routeKey = window.location.pathname + window.location.search + window.location.hash;
   if (routeKey === currentRouteKey) return;
   currentRouteKey = routeKey;
+  if (route === 'ai' && currentRoute !== 'ai') {
+    const origin = window.history.state?.aiFrom;
+    aiReturnRoute = ['home', 'quran', 'prayer'].includes(origin) ? origin
+      : ['home', 'quran', 'prayer'].includes(currentRoute) ? currentRoute : getAITopic() ? 'prayer' : 'home';
+  }
   if (route === 'ai') renderAIContext();
   const wasHidden = shell.hidden;
   const interior = route !== 'start' && route !== 'login';
@@ -80,6 +86,7 @@ function renderScreen() {
   shell.hidden = !interior;
   document.body.classList.toggle('is-internal', interior);
   accountReturn.hidden = route !== 'login';
+  document.getElementById('bottom-nav').hidden = route === 'ai';
   if (!interior) {
     cancelAnimationFrame(readyFrame);
     shell.classList.remove('is-ready');
@@ -90,6 +97,7 @@ function renderScreen() {
       window.scrollTo(0, 0);
       accountReturn.focus({ preventScroll: true });
     }
+    window.dispatchEvent(new CustomEvent('jamal:routechange', { detail: { route } }));
     return;
   }
   if (mainRoutes.includes(route)) lastMain = route;
@@ -114,26 +122,27 @@ function renderScreen() {
     window.scrollTo(0, 0);
   }
   currentHeading().focus({ preventScroll: true });
-  window.dispatchEvent(new CustomEvent('jamal:routechange', { detail: { route } }));
+  window.dispatchEvent(new CustomEvent('jamal:routechange', { detail: { route, topic: getAITopic() } }));
+}
+
+function getAITopic() {
+  const query = window.location.hash ? (window.location.hash.split('?')[1] || '') : window.location.search;
+  const parameters = new URLSearchParams(query);
+  return Object.hasOwn(globalThis.JAMAL_PRAYER_DATA.topics, parameters.get('topic')) ? parameters.get('topic') : null;
 }
 
 function renderAIContext() {
-  const query = window.location.hash ? (window.location.hash.split('?')[1] || '') : window.location.search;
-  const parameters = new URLSearchParams(query);
-  const topic = Object.hasOwn(globalThis.JAMAL_PRAYER_DATA.topics, parameters.get('topic'))
-    ? globalThis.JAMAL_PRAYER_DATA.topics[parameters.get('topic')] : null;
-  document.getElementById('ai-title').textContent = topic ? topic.title : 'AI';
-  document.getElementById('ai-title').dir = topic ? 'rtl' : 'ltr';
-  document.getElementById('ai-title').lang = topic ? 'ar' : 'en';
+  const topic = globalThis.JAMAL_PRAYER_DATA.topics[getAITopic()];
+  document.getElementById('ai-title').textContent = 'جمال';
   document.getElementById('ai-context').hidden = !topic;
+  document.getElementById('ai-topic-title').textContent = topic ? topic.title : '';
   document.getElementById('ai-topic').textContent = topic ? topic.prompt : '';
-  document.getElementById('ai-back').hidden = !topic;
 }
 
 function navigate(route, topic = null) {
   const hash = `#${route}${route === 'ai' && Object.hasOwn(globalThis.JAMAL_PRAYER_DATA.topics, topic) ? `?topic=${topic}` : ''}`;
   if (window.location.hash === hash) return;
-  window.history.pushState(null, '', hash);
+  window.history.pushState(route === 'ai' ? { chatEntry: true, aiFrom: currentRoute === 'ai' ? aiReturnRoute : currentRoute } : null, '', hash);
   renderScreen();
 }
 
@@ -145,7 +154,10 @@ settingsEntry.addEventListener('click', () => {
 accountReturn.addEventListener('click', () => navigate('home'));
 navButtons.forEach(button => button.addEventListener('click', () => navigate(button.dataset.route)));
 document.getElementById('detail-back').addEventListener('click', () => navigate(lastMain));
-document.getElementById('ai-back').addEventListener('click', () => navigate('prayer'));
+document.getElementById('ai-back').addEventListener('click', () => {
+  if (window.history.state?.chatEntry) window.history.back();
+  else navigate(aiReturnRoute);
+});
 window.addEventListener('hashchange', renderScreen);
 window.addEventListener('popstate', renderScreen);
 renderScreen();

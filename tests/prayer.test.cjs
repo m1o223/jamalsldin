@@ -59,6 +59,8 @@ function mount(sharedStorage = storage) {
   const aiButtons = ['wudu', 'salah'].map(topic => { const button = new Element(); button.dataset.prayerAi = topic; return button; });
   const homeRows = data.prayers.map(prayer => { const row = new Element(); row.dataset.prayer = prayer.key; row.time = new Element(); return row; });
   let url = new URL('https://example.test/prayer');
+  let historyState = null;
+  const historyStack = [];
   const context = {
     JAMAL_PRAYER_DATA: data, Intl, Date: ClockDate, Map, Set, URLSearchParams,
     localStorage: sharedStorage,
@@ -70,7 +72,11 @@ function mount(sharedStorage = storage) {
       addEventListener(type, callback) { events.set('document:' + type, callback); }
     },
     get location() { return { pathname: url.pathname, search: url.search, hash: url.hash }; },
-    history: { pushState(_state, _title, href) { url = new URL(href, url); } },
+    history: {
+      get state() { return historyState; },
+      pushState(state, _title, href) { historyStack.push({ url, state: historyState }); url = new URL(href, url); historyState = state; },
+      back() { const previous = historyStack.pop(); if (previous) { url = previous.url; historyState = previous.state; context.dispatchEvent({ type: 'popstate' }); } }
+    },
     addEventListener(type, callback) { const callbacks = events.get(type) || []; callbacks.push(callback); events.set(type, callbacks); },
     dispatchEvent(event) { (events.get(event.type) || []).forEach(callback => callback(event)); },
     CustomEvent: class { constructor(type, options) { this.type = type; this.detail = options.detail; } },
@@ -115,15 +121,25 @@ for (const [index, topic] of ['wudu', 'salah'].entries()) {
   assert.equal(app.context.location.hash, '#ai?topic=' + topic);
   assert.equal(app.el('internal-shell').dataset.section, 'ai');
   assert.equal(app.nav[3].attributes['aria-current'], 'page');
-  assert.equal(app.el('ai-title').textContent, data.topics[topic].title);
+  assert.equal(app.el('ai-title').textContent, 'جمال');
+  assert.equal(app.el('ai-topic-title').textContent, data.topics[topic].title);
+  assert.equal(app.el('bottom-nav').hidden, true);
   assert.equal(app.el('ai-topic').textContent, data.topics[topic].prompt);
   app.el('ai-back').fire(); app.flush();
   assert.equal(app.el('page-prayer').scrollTop, 800 + index * 200);
   assert.equal(app.focused(), app.aiButtons[index]);
+  assert.equal(app.el('bottom-nav').hidden, false);
 }
 app.nav[3].fire();
-assert.equal(app.el('ai-title').textContent, 'AI', 'general AI clears learning context');
+assert.equal(app.el('ai-title').textContent, 'جمال', 'shared chat assistant title');
 assert.equal(app.el('ai-context').hidden, true);
+for (const navIndex of [0, 1]) {
+  app.nav[navIndex].fire(); app.nav[3].fire();
+  assert.equal(app.el('bottom-nav').hidden, true);
+  app.el('ai-back').fire(); app.flush();
+  assert.equal(app.el('internal-shell').dataset.section, navIndex === 0 ? 'home' : 'quran');
+  assert.equal(app.el('bottom-nav').hidden, false);
+}
 assert.equal(app.el('settings-entry').hidden, true, 'preview stays guest');
 const today = new Date(app.clock.time);
 app.clock.time = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).getTime();

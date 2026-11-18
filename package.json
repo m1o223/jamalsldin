@@ -5,8 +5,8 @@
   "description": "Jamal aldin Arabic RTL interface design preview",
   "scripts": {
     "start": "node preview.cjs",
-    "test": "node tests/quran.test.cjs && node tests/prayer.test.cjs",
-    "check": "node --check script.js && node --check quran.js && node --check quran-data.js && node --check prayer.js && node --check prayer-data.js && node --check preview.cjs && node --check build.cjs",
+    "test": "node tests/quran.test.cjs && node tests/prayer.test.cjs && node tests/chat.test.cjs",
+    "check": "node --check script.js && node --check quran.js && node --check quran-data.js && node --check prayer.js && node --check prayer-data.js && node --check chat-core.js && node --check chat.js && node --check preview.cjs && node --check build.cjs",
     "build": "node build.cjs"
   }
 }
