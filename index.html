@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#F7F4ED">
   <title>Jamal aldin</title>
   <link rel="stylesheet" href="style.css">
+  <script src="quran-data.js" defer></script>
+  <script src="quran.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -110,7 +112,50 @@
             </dl>
           </article>
         </section>
-        <section class="page-panel" id="page-quran" aria-labelledby="quran-title" aria-hidden="true" inert><h1 id="quran-title" tabindex="-1">القرآن</h1></section>
+        <section class="page-panel quran-page" id="page-quran" aria-labelledby="quran-title" aria-hidden="true" inert>
+          <div id="quran-index-view" data-quran-view>
+            <div class="quran-sticky">
+              <div class="quran-topbar">
+                <h1 id="quran-title" data-view-heading tabindex="-1">القرآن الكريم</h1>
+                <div class="quran-actions">
+                  <button class="quran-icon-button" id="quran-search-toggle" type="button" aria-label="البحث عن سورة بالاسم أو الرقم" aria-expanded="false" aria-controls="quran-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
+                  <button class="quran-icon-button" id="quran-bookmarks-toggle" type="button" aria-label="فتح المحفوظات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4Z"/></svg></button>
+                </div>
+              </div>
+              <div class="quran-tabs" role="tablist" aria-label="أقسام القرآن الكريم" data-tab="reading">
+                <span class="quran-tab-indicator" aria-hidden="true"></span>
+                <button id="quran-reading-tab" type="button" role="tab" aria-selected="true" aria-controls="quran-reading">القراءة</button>
+                <button id="quran-learning-tab" type="button" role="tab" aria-selected="false" aria-controls="quran-learning" tabindex="-1">تعلّم مع <bdi lang="en" dir="ltr">AI</bdi></button>
+              </div>
+              <div class="quran-search" id="quran-search" hidden>
+                <label class="sr-only" for="surah-search">اسم السورة أو رقمها</label>
+                <input id="surah-search" type="search" placeholder="اسم السورة أو رقمها" autocomplete="off" spellcheck="false" enterkeyhint="search">
+                <button class="quran-icon-button" id="quran-search-clear" type="button" aria-label="مسح كلمة البحث"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 1 0 2-5M5 3v5h5"/></svg></button>
+                <button class="quran-icon-button" id="quran-search-close" type="button" aria-label="مسح البحث وإغلاقه"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+              </div>
+            </div>
+            <div class="quran-content">
+              <div id="quran-reading" role="tabpanel" aria-labelledby="quran-reading-tab">
+                <h2 class="surah-list-title">السور</h2>
+                <p class="sr-only" id="surah-results" role="status" aria-live="polite" aria-atomic="true"></p>
+                <ol class="surah-list" id="surah-list" aria-label="سور القرآن الكريم بترتيب المصحف"></ol>
+                <p class="quran-empty" id="surah-no-results" hidden>لا توجد نتائج</p>
+              </div>
+              <div class="quran-learning" id="quran-learning" role="tabpanel" aria-labelledby="quran-learning-tab" hidden>
+                <h2>تعلّم القرآن مع <bdi lang="en" dir="ltr">AI</bdi></h2>
+                <p>مساحة مخصّصة للمساعدة في تعلّم القرآن الكريم. ستُجهّز أدوات التعلّم في مرحلة لاحقة.</p>
+              </div>
+            </div>
+          </div>
+          <div class="quran-subview" id="quran-reader-view" data-quran-view hidden>
+            <div class="quran-subheader"><button class="quran-icon-button" id="surah-back" type="button" aria-label="الرجوع إلى قائمة السور"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><h2 id="surah-title" data-view-heading tabindex="-1"></h2></div>
+            <p class="surah-metadata">رقم السورة <bdi id="surah-number"></bdi><span aria-hidden="true"> · </span>عدد الآيات <bdi id="surah-verses"></bdi></p>
+          </div>
+          <div class="quran-subview" id="quran-bookmarks-view" data-quran-view hidden>
+            <div class="quran-subheader"><button class="quran-icon-button" id="bookmarks-back" type="button" aria-label="الرجوع إلى قائمة السور"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><h2 data-view-heading tabindex="-1">المحفوظات</h2></div>
+            <p class="quran-empty">لا توجد محفوظات بعد</p>
+          </div>
+        </section>
         <section class="page-panel" id="page-prayer" aria-labelledby="prayer-title" aria-hidden="true" inert><h1 id="prayer-title" tabindex="-1">الصلاة</h1></section>
         <section class="page-panel" id="page-ai" aria-labelledby="ai-title" aria-hidden="true" inert><h1 id="ai-title" lang="en" dir="ltr" tabindex="-1">AI</h1></section>
       </div>

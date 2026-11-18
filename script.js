@@ -61,6 +61,9 @@ function getRoute() {
 }
 
 function currentHeading() {
+  if (currentRoute === 'quran') {
+    return document.querySelector('#page-quran [data-quran-view]:not([hidden]) [data-view-heading]');
+  }
   return mainRoutes.includes(currentRoute)
     ? document.getElementById(`${currentRoute}-title`)
     : detailTitle;
