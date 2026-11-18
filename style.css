@@ -1,4 +1,4 @@
-﻿* { box-sizing: border-box; }
+* { box-sizing: border-box; }
 html { min-height: 100%; background: #F7F4ED; }
 body {
   margin: 0;
@@ -293,4 +293,3 @@ body.is-internal { overflow: hidden; }
 .sheet-close { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #163F36; border-radius: 50%; background: none; color: #163F36; cursor: pointer; }
 .sheet-option { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 60px; margin-top: 10px; padding: 14px 18px; border: 1px solid rgba(22,63,54,.2); border-radius: 16px; background: none; color: #163F36; font-size: 1rem; text-align: start; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .internal-shell.is-ready .page-track, .nav-indicator { transition: none; } }
-
