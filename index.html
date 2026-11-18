@@ -52,6 +52,7 @@
       </div>
       <div class="access-area">
         <div class="access">
+    <button class="account-return" id="account-return" type="button" hidden>الرجوع للرئيسية</button>
     <div class="options" id="entry-options">
       <button class="entry-button google-button" type="button" disabled title="تسجيل الدخول باستخدام Google غير مفعّل في هذه المعاينة">
         <!-- Google artwork: https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg -->
@@ -79,25 +80,30 @@
     <main class="page-stage" id="page-stage">
       <div class="page-track" id="page-track">
         <section class="page-panel" id="page-home" aria-label="الرئيسية">
+          <button class="home-account" id="account-entry" type="button">
+            <span class="account-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span>
+            <span>تسجيل الدخول</span>
+          </button>
           <article class="prayer-card" aria-labelledby="home-title">
             <div class="prayer-card-header">
               <p class="prayer-city"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>لم يتم اختيار مدينة</span></p>
               <p class="prayer-date"><span>التاريخ</span><bdi>—</bdi></p>
             </div>
+            <p class="prayer-preview-note">مواقيت تجريبية للمعاينة</p>
             <div class="upcoming-prayer">
               <h2 id="home-title" tabindex="-1">الصلاة القادمة</h2>
               <div class="upcoming-main">
-                <strong class="upcoming-name" aria-label="اسم الصلاة غير متاح">—</strong>
-                <strong class="upcoming-time" aria-label="موعد الصلاة غير متاح"><bdi dir="ltr">—:—</bdi></strong>
+                <strong class="upcoming-name" id="upcoming-name">—</strong>
+                <strong class="upcoming-time"><bdi id="upcoming-time" dir="ltr">—:—</bdi></strong>
               </div>
-              <p class="prayer-remaining"><span>الوقت المتبقي</span><bdi aria-label="الوقت المتبقي غير متاح">—</bdi></p>
+              <p class="prayer-remaining"><span>متبقّي</span><bdi id="remaining-time" dir="ltr">—</bdi></p>
             </div>
             <dl class="daily-prayers" aria-label="مواقيت صلوات اليوم">
-              <div class="prayer-row"><dt>الفجر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
-              <div class="prayer-row"><dt>الظهر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
-              <div class="prayer-row"><dt>العصر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
-              <div class="prayer-row"><dt>المغرب</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
-              <div class="prayer-row"><dt>العشاء</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row" data-prayer="fajr"><dt>الفجر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row" data-prayer="dhuhr"><dt>الظهر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row" data-prayer="asr"><dt>العصر</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row" data-prayer="maghrib"><dt>المغرب</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
+              <div class="prayer-row" data-prayer="isha"><dt>العشاء</dt><dd><bdi dir="ltr">—:—</bdi></dd></div>
             </dl>
           </article>
         </section>

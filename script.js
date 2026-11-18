@@ -1,5 +1,19 @@
 'use strict';
 // Local design navigation only. No authentication, storage, or external requests.
+// Display-only fixture. Replace this object when a real prayer-time source is added.
+// These values have no city, calculation method, clock, or countdown behind them.
+const PRAYER_PREVIEW = Object.freeze({
+  times: Object.freeze({ fajr: '05:15', dhuhr: '12:30', asr: '15:45', maghrib: '18:10', isha: '19:40' }),
+  nextPrayer: Object.freeze({ key: 'asr', name: 'العصر' }),
+  remaining: '01:20'
+});
+document.getElementById('upcoming-name').textContent = PRAYER_PREVIEW.nextPrayer.name;
+document.getElementById('upcoming-time').textContent = PRAYER_PREVIEW.times[PRAYER_PREVIEW.nextPrayer.key];
+document.getElementById('remaining-time').textContent = PRAYER_PREVIEW.remaining;
+document.querySelectorAll('[data-prayer]').forEach(row => {
+  row.querySelector('bdi').textContent = PRAYER_PREVIEW.times[row.dataset.prayer];
+  row.classList.toggle('is-next', row.dataset.prayer === PRAYER_PREVIEW.nextPrayer.key);
+});
 const startScreen = document.getElementById('start-screen');
 const shell = document.getElementById('internal-shell');
 const track = document.getElementById('page-track');
@@ -9,6 +23,8 @@ const options = document.getElementById('entry-options');
 const emailButton = document.getElementById('email-option');
 const panel = document.getElementById('email-panel');
 const continueButton = document.getElementById('preview-continue');
+const accountEntry = document.getElementById('account-entry');
+const accountReturn = document.getElementById('account-return');
 const moreButton = document.getElementById('more-button');
 const sheet = document.getElementById('more-sheet');
 const navButtons = [...document.querySelectorAll('.nav-item[data-route]')];
@@ -30,7 +46,7 @@ emailButton.addEventListener('click', () => {
 
 function getRoute() {
   const route = window.location.hash.slice(1) || window.location.pathname.replace(/^\/+|\/+$/g, '');
-  return mainRoutes.includes(route) || Object.hasOwn(detailNames, route) ? route : 'start';
+  return mainRoutes.includes(route) || Object.hasOwn(detailNames, route) || route === 'login' ? route : 'start';
 }
 
 function currentHeading() {
@@ -43,11 +59,12 @@ function renderScreen() {
   const route = getRoute();
   if (route === currentRoute) return;
   const wasHidden = shell.hidden;
-  const interior = route !== 'start';
+  const interior = route !== 'start' && route !== 'login';
   currentRoute = route;
   startScreen.hidden = interior;
   shell.hidden = !interior;
   document.body.classList.toggle('is-internal', interior);
+  accountReturn.hidden = route !== 'login';
   if (!interior) {
     cancelAnimationFrame(readyFrame);
     shell.classList.remove('is-ready');
@@ -55,6 +72,13 @@ function renderScreen() {
     sheetAnimation?.cancel();
     if (sheet.open) sheet.close();
     moreButton.setAttribute('aria-expanded', 'false');
+    if (route === 'login') {
+      options.hidden = false;
+      panel.hidden = true;
+      emailButton.setAttribute('aria-expanded', 'false');
+      window.scrollTo(0, 0);
+      accountReturn.focus({ preventScroll: true });
+    }
     return;
   }
   if (mainRoutes.includes(route)) lastMain = route;
@@ -122,6 +146,8 @@ function closeMore(focusTarget = moreButton) {
 }
 
 continueButton.addEventListener('click', () => navigate('home'));
+accountEntry.addEventListener('click', () => navigate('login'));
+accountReturn.addEventListener('click', () => navigate('home'));
 navButtons.forEach(button => button.addEventListener('click', () => navigate(button.dataset.route)));
 moreButton.addEventListener('click', openMore);
 document.getElementById('close-more').addEventListener('click', () => closeMore());

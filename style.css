@@ -323,6 +323,12 @@ body.is-internal { overflow: hidden; }
 .prayer-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 46px; padding: 9px 12px; border: 1px solid transparent; border-radius: 14px; font-size: 1rem; line-height: 1.6; }
 .prayer-row dt, .prayer-row dd { margin: 0; }
 .prayer-row dd { font-variant-numeric: tabular-nums; }
-/* Reserved for real data: no row is marked as the next prayer in this preview. */
-.prayer-row.is-next { border-color: rgba(255,255,255,.5); }
+.prayer-row.is-next { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.06); }
 @media (max-width: 360px) { .prayer-card { padding: 22px 20px; } }
+.home-account { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin: 0 0 18px; padding: 0; border: 0; background: none; color: #163F36; font-size: 1rem; line-height: 1.6; cursor: pointer; }
+.account-avatar { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid rgba(22,63,54,.2); border-radius: 50%; background: rgba(22,63,54,.04); }
+.account-avatar svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.account-return { display: block; min-height: 44px; margin: 0 auto 18px; padding: 8px 18px; border: 1px solid rgba(255,255,255,.5); border-radius: 9999px; background: none; color: #FFFFFF; font-size: .875rem; cursor: pointer; }
+.prayer-card .prayer-preview-note { display: inline-block; margin-top: 14px; padding: 4px 10px; border: 1px solid rgba(255,255,255,.3); border-radius: 9999px; font-size: .8125rem; line-height: 1.7; }
+.upcoming-name { font-size: clamp(1.8rem, 7vw, 2.25rem); }
+.upcoming-time { font-size: clamp(2rem, 8vw, 2.5rem); font-weight: 600; }
