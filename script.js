@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 // Local design navigation only. No authentication, storage, or external requests.
 const startScreen = document.getElementById('start-screen');
 const shell = document.getElementById('internal-shell');

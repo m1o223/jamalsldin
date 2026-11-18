@@ -1,4 +1,4 @@
-﻿// Local static preview only. No application API, persistence, or external calls.
+// Local static preview only. No application API, persistence, or external calls.
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');

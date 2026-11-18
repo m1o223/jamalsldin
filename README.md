@@ -1,4 +1,4 @@
-﻿# Jamal aldin
+# Jamal aldin
 
 Static Arabic RTL design prototype. No backend, authentication, database, or credential collection. Provider logos and other illustrations are inline SVG; the current interface requires no external images, fonts, or runtime network requests.
 
@@ -15,6 +15,8 @@ On Windows PowerShell with script execution restricted, use `npm.cmd` in place o
 
 GitHub source: https://github.com/m1o223/jamalsldin
 Production branch: `main`.
+Vercel project: `jamal-aldin`, team `m1o223s-projects`.
+Stable production domain: https://jamal-aldin-m1o223s-projects.vercel.app
 Vercel uses framework Other, repository root, build command `npm run check && npm run build`, output directory `dist`, and the committed lockfile.
 
 Direct routes: `/home`, `/quran`, `/prayer`, `/profile`, `/settings`. Hash routes such as `/#home` also work. The start screen remains at `/`.
