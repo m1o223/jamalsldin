@@ -1,0 +1,10 @@
+.git
+.vercel
+node_modules
+backups
+.env
+.env.*
+.codex
+.agents
+.aws
+*.log

@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.vercel/
+.env
+.env.*
+!.env.example
+backups/
+.cache/
+.codex/
+.agents/
+.aws/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+# Legacy files from the previous, unrelated website are not part of this interface.
+/about.html
+/app.html
+/contact.html
+/privacy.html
+/mark.svg
+/images/about.jpg
+/images/hero.jpg
+/images/team.png

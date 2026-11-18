@@ -1,0 +1,107 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F7F4ED">
+  <title>Jamal aldin</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="start" id="start-screen" aria-labelledby="start-title">
+    <div class="identity">
+      <div class="birds" aria-hidden="true">
+        <svg class="bird bird-one" viewBox="0 0 40 24" focusable="false">
+          <g class="bird-wings"><path d="M20 14C16 6 8 2 2 5C10 5 13 12 20 14M20 14C24 6 32 2 38 5C30 5 27 12 20 14"/></g>
+          <path d="M18 16Q20 12 23 13M20 15L18 19"/>
+        </svg>
+        <svg class="bird bird-two" viewBox="0 0 40 24" focusable="false">
+          <g class="bird-wings"><path d="M20 14C16 6 8 2 2 5C10 5 13 12 20 14M20 14C24 6 32 2 38 5C30 5 27 12 20 14"/></g>
+          <path d="M18 16Q20 12 23 13M20 15L18 19"/>
+        </svg>
+        <svg class="bird bird-three" viewBox="0 0 40 24" focusable="false">
+          <g class="bird-wings"><path d="M20 14C16 6 8 2 2 5C10 5 13 12 20 14M20 14C24 6 32 2 38 5C30 5 27 12 20 14"/></g>
+          <path d="M18 16Q20 12 23 13M20 15L18 19"/>
+        </svg>
+      </div>
+      <h1 id="start-title" lang="en" dir="ltr">Jamal aldin</h1>
+      <p class="welcome">ابدأ رحلتك معنا</p>
+    </div>
+    <div class="mosque-area">
+      <div class="mosque-roof" aria-hidden="true">
+        <svg viewBox="0 0 1000 360" preserveAspectRatio="xMidYMax meet" focusable="false">
+          <defs>
+            <g id="minaret">
+              <path d="M157 285V148L148 138V131H160V86H156L170 32L184 86H180V131H192V138L183 148V285Z"/>
+              <rect x="168" y="20" width="4" height="16"/>
+              <rect class="architectural-opening" x="166" y="103" width="8" height="20" rx="4"/>
+              <rect class="architectural-opening" x="166" y="179" width="8" height="32" rx="4"/>
+              <path class="architectural-detail" d="M150 136H190"/>
+            </g>
+          </defs>
+          <!-- One continuous silhouette: the broad dome flows directly into the green area. -->
+          <path d="M0 285H220C220 203 275 151 350 126C420 104 466 90 495 74Q500 69 505 74C534 90 580 104 650 126C725 151 780 203 780 285H1000V360H0Z"/>
+          <use href="#minaret"/>
+          <use href="#minaret" transform="translate(660 0)"/>
+          <!-- The finial stem touches both the dome crown and crescent. -->
+          <rect x="498" y="48" width="4" height="26"/>
+          <circle cx="500" cy="38" r="12"/>
+          <circle class="architectural-opening" cx="505" cy="34" r="11"/>
+        </svg>
+      </div>
+      <div class="access-area">
+        <div class="access">
+    <div class="options" id="entry-options">
+      <button class="entry-button google-button" type="button" disabled title="تسجيل الدخول باستخدام Google غير مفعّل في هذه المعاينة">
+        <!-- Google artwork: https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg -->
+        <svg class="icon google" viewBox="0 0 118 120" aria-hidden="true"><path d="M117.6,61.3636364 C117.6,57.1090909 117.218182,53.0181818 116.509091,49.0909091 L60,49.0909091 L60,72.3 L92.2909091,72.3 C90.9,79.8 86.6727273,86.1545455 80.3181818,90.4090909 L80.3181818,105.463636 L99.7090909,105.463636 C111.054545,95.0181818 117.6,79.6363636 117.6,61.3636364 L117.6,61.3636364 Z" fill="#4285F4"/><path d="M60,120 C76.2,120 89.7818182,114.627273 99.7090909,105.463636 L80.3181818,90.4090909 C74.9454545,94.0090909 68.0727273,96.1363636 60,96.1363636 C44.3727273,96.1363636 31.1454545,85.5818182 26.4272727,71.4 L6.38181818,71.4 L6.38181818,86.9454545 C16.2545455,106.554545 36.5454545,120 60,120 L60,120 Z" fill="#34A853"/><path d="M26.4272727,71.4 C25.2272727,67.8 24.5454545,63.9545455 24.5454545,60 C24.5454545,56.0454545 25.2272727,52.2 26.4272727,48.6 L26.4272727,33.0545455 L6.38181818,33.0545455 C2.31818182,41.1545455 0,50.3181818 0,60 C0,69.6818182 2.31818182,78.8454545 6.38181818,86.9454545 L26.4272727,71.4 L26.4272727,71.4 Z" fill="#FBBC05"/><path d="M60,23.8636364 C68.8090909,23.8636364 76.7181818,26.8909091 82.9363636,32.8363636 L100.145455,15.6272727 C89.7545455,5.94545455 76.1727273,0 60,0 C36.5454545,0 16.2545455,13.4454545 6.38181818,33.0545455 L26.4272727,48.6 C31.1454545,34.4181818 44.3727273,23.8636364 60,23.8636364 L60,23.8636364 Z" fill="#EA4335"/></svg>
+        <span>المتابعة باستخدام <bdi lang="en" dir="ltr">Google</bdi></span>
+      </button>
+      <button class="entry-button apple-button" type="button" disabled title="تسجيل الدخول باستخدام Apple غير مفعّل في هذه المعاينة">
+        <!-- Apple artwork: official appleid.auth.js logo path, kept at its original proportions. -->
+        <svg class="icon apple" viewBox="20.5 16 15 19" aria-hidden="true"><path d="M28.2226562,20.3846154 C29.0546875,20.3846154 30.0976562,19.8048315 30.71875,19.0317864 C31.28125,18.3312142 31.6914062,17.352829 31.6914062,16.3744437 C31.6914062,16.2415766 31.6796875,16.1087095 31.65625,16 C30.7304687,16.0362365 29.6171875,16.640178 28.9492187,17.4494596 C28.421875,18.06548 27.9414062,19.0317864 27.9414062,20.0222505 C27.9414062,20.1671964 27.9648438,20.3121424 27.9765625,20.3604577 C28.0351562,20.3725366 28.1289062,20.3846154 28.2226562,20.3846154 Z M25.2929688,35 C26.4296875,35 26.9335938,34.214876 28.3515625,34.214876 C29.7929688,34.214876 30.109375,34.9758423 31.375,34.9758423 C32.6171875,34.9758423 33.4492188,33.792117 34.234375,32.6325493 C35.1132812,31.3038779 35.4765625,29.9993643 35.5,29.9389701 C35.4179688,29.9148125 33.0390625,28.9122695 33.0390625,26.0979021 C33.0390625,23.6579784 34.9140625,22.5588048 35.0195312,22.474253 C33.7773438,20.6382708 31.890625,20.5899555 31.375,20.5899555 C29.9804688,20.5899555 28.84375,21.4596313 28.1289062,21.4596313 C27.3554688,21.4596313 26.3359375,20.6382708 25.1289062,20.6382708 C22.8320312,20.6382708 20.5,22.5950413 20.5,26.2911634 C20.5,28.5861411 21.3671875,31.013986 22.4335938,32.5842339 C23.3476562,33.9129053 24.1445312,35 25.2929688,35 Z"/></svg>
+        <span>المتابعة باستخدام <bdi lang="en" dir="ltr">Apple</bdi></span>
+      </button>
+      <button class="entry-button email-button" id="email-option" type="button" aria-controls="email-panel" aria-expanded="false">
+        <svg class="icon envelope" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+        <span>المتابعة بالبريد الإلكتروني</span>
+      </button>
+    </div>
+    <div class="email-panel" id="email-panel" hidden>
+      <button class="continue-button" id="preview-continue" type="button">متابعة</button>
+    </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="internal-shell" id="internal-shell" data-section="home" hidden>
+    <main class="page-stage" id="page-stage">
+      <div class="page-track" id="page-track">
+        <section class="page-panel" id="page-home" aria-labelledby="home-title"><h1 id="home-title" tabindex="-1">الصفحة الرئيسية</h1></section>
+        <section class="page-panel" id="page-quran" aria-labelledby="quran-title" aria-hidden="true" inert><h1 id="quran-title" tabindex="-1">القرآن</h1></section>
+        <section class="page-panel" id="page-prayer" aria-labelledby="prayer-title" aria-hidden="true" inert><h1 id="prayer-title" tabindex="-1">الصلاة</h1></section>
+      </div>
+      <section class="detail-page" id="detail-page" aria-labelledby="detail-title" hidden>
+        <button class="detail-back" id="detail-back" type="button">رجوع</button>
+        <h1 id="detail-title" tabindex="-1"></h1>
+      </section>
+    </main>
+    <nav class="bottom-nav" aria-label="التنقل بين الأقسام">
+      <span class="nav-indicator" aria-hidden="true"></span>
+      <button class="nav-item" type="button" data-route="home" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg><span>الرئيسية</span></button>
+      <button class="nav-item" type="button" data-route="quran"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v15c-4-1-6 0-9 2-3-2-5-3-9-2Z"/><path d="m6 9 3 1m6 0 3-1"/></svg><span>القرآن</span></button>
+      <button class="nav-item" type="button" data-route="prayer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V10m0-5v2m18 14V10m0-5v2M1 10h4m14 0h4M7 21v-8h10v8M7 13c0-4 5-6 5-6s5 2 5 6M12 7V4m-2 17v-4a2 2 0 0 1 4 0v4M1 21h22"/></svg><span>الصلاة</span></button>
+      <button class="nav-item" id="more-button" type="button" aria-haspopup="dialog" aria-controls="more-sheet" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>المزيد</span></button>
+    </nav>
+  </div>
+  <dialog class="more-sheet" id="more-sheet" aria-labelledby="more-title">
+    <div class="sheet-header"><h2 id="more-title">المزيد</h2><button class="sheet-close" id="close-more" type="button" aria-label="إغلاق المزيد"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <button class="sheet-option" type="button" data-route="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>الملف الشخصي</span></button>
+    <button class="sheet-option" type="button" data-route="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h6l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z"/><circle cx="12" cy="12" r="3"/></svg><span>الإعدادات</span></button>
+  </dialog>
+</body>
+</html>
+
+
+

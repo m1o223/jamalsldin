@@ -1,0 +1,11 @@
+﻿{
+  "name": "jamal-aldin",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Jamal aldin Arabic RTL interface design preview",
+  "scripts": {
+    "start": "node preview.cjs",
+    "check": "node --check script.js && node --check preview.cjs && node --check build.cjs",
+    "build": "node build.cjs"
+  }
+}
