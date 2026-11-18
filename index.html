@@ -8,7 +8,9 @@
   <link rel="stylesheet" href="style.css">
   <script src="quran-data.js" defer></script>
   <script src="quran.js" defer></script>
+  <script src="prayer-data.js" defer></script>
   <script src="script.js" defer></script>
+  <script src="prayer.js" defer></script>
 </head>
 <body>
   <main class="start" id="start-screen" aria-labelledby="start-title">
@@ -156,8 +158,48 @@
             <p class="quran-empty">لا توجد محفوظات بعد</p>
           </div>
         </section>
-        <section class="page-panel" id="page-prayer" aria-labelledby="prayer-title" aria-hidden="true" inert><h1 id="prayer-title" tabindex="-1">الصلاة</h1></section>
-        <section class="page-panel" id="page-ai" aria-labelledby="ai-title" aria-hidden="true" inert><h1 id="ai-title" lang="en" dir="ltr" tabindex="-1">AI</h1></section>
+        <section class="page-panel" id="page-prayer" aria-labelledby="prayer-title" aria-hidden="true" inert>
+          <div class="prayer-content" id="prayer-overview" data-prayer-view>
+            <h1 id="prayer-title" data-view-heading tabindex="-1">الصلاة</h1>
+            <div class="prayer-sections">
+              <section class="prayer-module prayer-tracker" aria-labelledby="tracker-title">
+                <div class="tracker-heading"><div><h2 id="tracker-title">صلواتك اليوم</h2><p>أيّ الفروض صلّيت اليوم؟</p></div><svg class="prayer-module-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18m-13 5 2 2 4-4"/></svg></div>
+                <time class="tracker-date" id="tracker-date"></time>
+                <div class="prayer-checklist" id="prayer-checklist" aria-label="متابعة الفروض الخمسة"></div>
+                <p class="tracker-count" id="tracker-count" role="status" aria-live="polite" aria-atomic="true"></p>
+                <p class="tracker-preview-note">مواقيت تجريبية للمعاينة</p>
+                <p class="tracker-storage-note" id="tracker-storage-note" role="status" hidden>تعذّر الحفظ على هذا الجهاز. تبقى اختياراتك متاحة خلال هذه الجلسة فقط.</p>
+              </section>
+              <section class="prayer-module prayer-qibla-card" aria-labelledby="qibla-card-title">
+                <svg class="prayer-module-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg>
+                <h2 id="qibla-card-title">اتجاه القبلة</h2>
+                <p>اعرف اتجاه القبلة من مكانك</p>
+                <button class="prayer-action" id="qibla-open" type="button">اعرف اتجاه القبلة</button>
+              </section>
+              <section class="prayer-module prayer-learning-card" aria-labelledby="wudu-card-title">
+                <svg class="prayer-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-2 3-6 7-6 11a6 6 0 0 0 12 0c0-4-4-8-6-11Z"/><path d="M9 14a3 3 0 0 0 3 3"/></svg>
+                <h2 id="wudu-card-title">هل تريد أن تتعلّم الوضوء بالطريقة الصحيحة؟</h2>
+                <p>تعلّم الخطوات بسهولة، خطوة بخطوة</p>
+                <div class="prayer-learning-actions"><button class="prayer-action" type="button" data-prayer-ai="wudu">تعلّم مع <bdi lang="en" dir="ltr">AI</bdi></button><button class="prayer-action prayer-action-outline" type="button" disabled aria-describedby="wudu-video-note">شاهد شرح الوضوء</button></div>
+                <p class="prayer-video-note" id="wudu-video-note">الفيديو بانتظار مراجعة المحتوى قبل تفعيله.</p>
+              </section>
+              <section class="prayer-module prayer-learning-card" aria-labelledby="salah-card-title">
+                <svg class="prayer-module-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14H4Zm4 0v-8c0-3 4-5 4-5s4 2 4 5v8M2 21h20"/></svg>
+                <h2 id="salah-card-title">هل تريد أن تتعلّم الصلاة بالطريقة الصحيحة؟</h2>
+                <p>تعلّم الصلاة خطوة بخطوة</p>
+                <div class="prayer-learning-actions"><button class="prayer-action" type="button" data-prayer-ai="salah">تعلّم مع <bdi lang="en" dir="ltr">AI</bdi></button><button class="prayer-action prayer-action-outline" type="button" disabled aria-describedby="salah-video-note">شاهد شرح الصلاة</button></div>
+                <p class="prayer-video-note" id="salah-video-note">الفيديو بانتظار مراجعة المحتوى قبل تفعيله.</p>
+              </section>
+            </div>
+          </div>
+          <div class="prayer-content prayer-qibla-view" id="prayer-qibla" data-prayer-view hidden>
+            <div class="prayer-subheader"><button class="quran-icon-button" id="qibla-back" type="button" aria-label="الرجوع إلى صفحة الصلاة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><h2 data-view-heading tabindex="-1">اتجاه القبلة</h2></div>
+            <div class="qibla-unavailable"><svg class="qibla-static-icon" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="25"/><circle cx="32" cy="32" r="3"/><path d="M32 7v7m0 36v7M7 32h7m36 0h7"/></svg><p>تحديد الاتجاه غير متاح حالياً</p></div>
+          </div>
+        </section>
+        <section class="page-panel" id="page-ai" aria-labelledby="ai-title" aria-hidden="true" inert>
+          <div class="ai-placeholder"><button class="prayer-ai-back" id="ai-back" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg><span>الرجوع إلى الصلاة</span></button><h1 id="ai-title" lang="en" dir="ltr" tabindex="-1">AI</h1><div id="ai-context" hidden><p class="ai-topic" id="ai-topic"></p><p>المساعد غير متاح حالياً</p></div></div>
+        </section>
       </div>
       <section class="detail-page" id="detail-page" aria-labelledby="detail-title" hidden>
         <button class="detail-back" id="detail-back" type="button">رجوع</button>

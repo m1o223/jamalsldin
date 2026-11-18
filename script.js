@@ -1,12 +1,6 @@
 'use strict';
-// Local design navigation only. No authentication, storage, or external requests.
-// Display-only fixture. Replace this object when a real prayer-time source is added.
-// These values have no city, calculation method, clock, or countdown behind them.
-const PRAYER_PREVIEW = Object.freeze({
-  times: Object.freeze({ fajr: '05:15', dhuhr: '12:30', asr: '15:45', maghrib: '18:10', isha: '19:40' }),
-  nextPrayer: Object.freeze({ key: 'asr', name: 'العصر' }),
-  remaining: '01:20'
-});
+// Local design navigation only. No authentication or external requests.
+const PRAYER_PREVIEW = globalThis.JAMAL_PRAYER_DATA.preview;
 document.getElementById('upcoming-name').textContent = PRAYER_PREVIEW.nextPrayer.name;
 document.getElementById('upcoming-time').textContent = PRAYER_PREVIEW.times[PRAYER_PREVIEW.nextPrayer.key];
 document.getElementById('remaining-time').textContent = PRAYER_PREVIEW.remaining;
@@ -44,6 +38,7 @@ const navButtons = [...document.querySelectorAll('.nav-item[data-route]')];
 const mainRoutes = ['home', 'quran', 'prayer', 'ai'];
 const detailNames = { profile: 'الملف الشخصي', settings: 'الإعدادات' };
 let currentRoute = null;
+let currentRouteKey = null;
 let lastMain = 'home';
 let readyFrame;
 
@@ -55,12 +50,15 @@ emailButton.addEventListener('click', () => {
 });
 
 function getRoute() {
-  const route = window.location.hash.slice(1) || window.location.pathname.replace(/^\/+|\/+$/g, '');
+  const route = window.location.hash.slice(1).split('?')[0] || window.location.pathname.replace(/^\/+|\/+$/g, '');
   if (Object.hasOwn(detailNames, route) && !ACCOUNT_STATE.user) return 'login';
   return mainRoutes.includes(route) || Object.hasOwn(detailNames, route) || route === 'login' ? route : 'start';
 }
 
 function currentHeading() {
+  if (currentRoute === 'prayer') {
+    return document.querySelector('#page-prayer [data-prayer-view]:not([hidden]) [data-view-heading]');
+  }
   if (currentRoute === 'quran') {
     return document.querySelector('#page-quran [data-quran-view]:not([hidden]) [data-view-heading]');
   }
@@ -71,7 +69,10 @@ function currentHeading() {
 
 function renderScreen() {
   const route = getRoute();
-  if (route === currentRoute) return;
+  const routeKey = window.location.pathname + window.location.search + window.location.hash;
+  if (routeKey === currentRouteKey) return;
+  currentRouteKey = routeKey;
+  if (route === 'ai') renderAIContext();
   const wasHidden = shell.hidden;
   const interior = route !== 'start' && route !== 'login';
   currentRoute = route;
@@ -113,11 +114,26 @@ function renderScreen() {
     window.scrollTo(0, 0);
   }
   currentHeading().focus({ preventScroll: true });
+  window.dispatchEvent(new CustomEvent('jamal:routechange', { detail: { route } }));
 }
 
-function navigate(route) {
-  if (route === currentRoute) return;
-  window.history.pushState(null, '', `#${route}`);
+function renderAIContext() {
+  const query = window.location.hash ? (window.location.hash.split('?')[1] || '') : window.location.search;
+  const parameters = new URLSearchParams(query);
+  const topic = Object.hasOwn(globalThis.JAMAL_PRAYER_DATA.topics, parameters.get('topic'))
+    ? globalThis.JAMAL_PRAYER_DATA.topics[parameters.get('topic')] : null;
+  document.getElementById('ai-title').textContent = topic ? topic.title : 'AI';
+  document.getElementById('ai-title').dir = topic ? 'rtl' : 'ltr';
+  document.getElementById('ai-title').lang = topic ? 'ar' : 'en';
+  document.getElementById('ai-context').hidden = !topic;
+  document.getElementById('ai-topic').textContent = topic ? topic.prompt : '';
+  document.getElementById('ai-back').hidden = !topic;
+}
+
+function navigate(route, topic = null) {
+  const hash = `#${route}${route === 'ai' && Object.hasOwn(globalThis.JAMAL_PRAYER_DATA.topics, topic) ? `?topic=${topic}` : ''}`;
+  if (window.location.hash === hash) return;
+  window.history.pushState(null, '', hash);
   renderScreen();
 }
 
@@ -129,6 +145,7 @@ settingsEntry.addEventListener('click', () => {
 accountReturn.addEventListener('click', () => navigate('home'));
 navButtons.forEach(button => button.addEventListener('click', () => navigate(button.dataset.route)));
 document.getElementById('detail-back').addEventListener('click', () => navigate(lastMain));
+document.getElementById('ai-back').addEventListener('click', () => navigate('prayer'));
 window.addEventListener('hashchange', renderScreen);
 window.addEventListener('popstate', renderScreen);
 renderScreen();
