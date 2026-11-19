@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#F7F4ED">
   <title>Jamal aldin</title>
+  <script src="preferences.js"></script>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="settings.css">
   <script src="quran-data.js" defer></script>
   <script src="quran.js" defer></script>
   <script src="prayer-data.js" defer></script>
@@ -13,6 +15,7 @@
   <script src="prayer.js" defer></script>
   <script src="chat-core.js" defer></script>
   <script src="chat.js" defer></script>
+  <script src="settings.js" defer></script>
 </head>
 <body>
   <main class="start" id="start-screen" aria-labelledby="start-title">
@@ -236,7 +239,7 @@
             </footer>
             <dialog class="chat-history" id="chat-history" aria-labelledby="chat-history-title">
               <div class="chat-history-heading"><h2 id="chat-history-title">المحادثات</h2><button class="chat-icon-button" id="chat-history-close" type="button" aria-label="إغلاق قائمة المحادثات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
-              <button class="chat-new" id="chat-new" type="button">محادثة جديدة</button><p class="chat-local-note">محفوظة على هذا الجهاز فقط</p><div id="chat-history-list" class="chat-history-list"></div>
+              <button class="chat-new" id="chat-new" type="button">محادثة جديدة</button><p class="chat-local-note" id="chat-local-note">محفوظة على هذا الجهاز فقط</p><div id="chat-history-list" class="chat-history-list"></div>
             </dialog>
           </div>
         </section>
@@ -244,6 +247,36 @@
       <section class="detail-page" id="detail-page" aria-labelledby="detail-title" hidden>
         <button class="detail-back" id="detail-back" type="button">رجوع</button>
         <h1 id="detail-title" tabindex="-1"></h1>
+      </section>
+      <section class="settings-page" id="settings-page" aria-labelledby="settings-title" hidden>
+        <header class="settings-header"><button class="quran-icon-button" id="settings-back" type="button" aria-label="الرجوع"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><h1 id="settings-title" tabindex="-1">الإعدادات</h1></header>
+        <div class="settings-content">
+          <p class="settings-status" id="settings-status" role="status" hidden></p>
+          <div id="settings-index" data-settings-view>
+            <section class="settings-account-card"><span class="settings-avatar" aria-hidden="true"><svg id="settings-avatar-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><img id="settings-photo" alt="" hidden></span><div><h2 id="settings-account-name">أنت تتصفح كضيف</h2><p id="settings-account-email" hidden></p><button class="settings-link" id="settings-login" type="button">تسجيل الدخول</button></div></section>
+            <div id="settings-groups"></div>
+            <button class="settings-button" id="settings-logout" type="button" hidden disabled>تسجيل الخروج — غير متاح حالياً</button>
+          </div>
+          <div id="settings-details" data-settings-view hidden>
+            <section data-settings-section="account" hidden>
+              <p class="settings-notice">تعديل الحساب يتطلب تسجيل دخول وخدمة حسابات فعلية. هذه الواجهة غير مرتبطة حالياً، ولا تُحفظ بيانات الحساب أو كلمة المرور.</p><button class="settings-button" data-settings-login type="button">تسجيل الدخول</button>
+              <div class="settings-fields"><label>الاسم<input id="settings-edit-name" type="text" autocomplete="off" disabled></label><label>الصورة<input type="file" accept="image/*" disabled></label><label>البريد الإلكتروني<input id="settings-edit-email" type="email" autocomplete="off" disabled></label><label>كلمة المرور الجديدة<input type="password" autocomplete="new-password" disabled></label><button class="settings-button" type="button" disabled>حفظ تغييرات الحساب — قريباً</button></div>
+              <div class="settings-danger-zone"><h3>إجراءات الحساب</h3><p>مسح البيانات المحلية لا يحذف حساباً.</p><button class="settings-button settings-outline" id="settings-delete-account" type="button">حذف الحساب</button></div>
+            </section>
+            <section data-settings-section="premium" hidden><span class="settings-badge">قريباً</span><h2>Premium</h2><p>الخطة الحالية غير معروفة؛ لا توجد خدمة اشتراكات متصلة.</p><h3>مزايا Premium</h3><p>تفاصيل الخطط والمزايا ستُعلن لاحقاً.</p><button class="settings-button" type="button" disabled>إدارة الاشتراك — قريباً</button></section>
+            <section data-settings-section="notifications" hidden><p class="settings-notice">هذه تفضيلات محفوظة على الجهاز فقط. إرسال التنبيهات الفعلية غير مفعّل حالياً.</p><fieldset><legend>تنبيهات الصلاة</legend><div id="settings-prayer-alerts"></div></fieldset><label class="settings-toggle">تذكير الأذكار<input data-pref="alertAdhkar" type="checkbox"></label><label class="settings-toggle">تذكير الورد اليومي<input data-pref="alertDaily" type="checkbox"></label><label class="settings-toggle">صوت التنبيه<input data-pref="alertSound" type="checkbox"></label><p>اختيار صوت مخصّص ومعاينته: قريباً.</p></section>
+            <section data-settings-section="prayer" hidden><p class="settings-notice">مواقيت تجريبية للمعاينة. اختيار المدينة أو طريقة الحساب يحفظ تفضيلك فقط، ولا يجعل المواقيت الحالية دقيقة أو مرتبطة بهذا المكان.</p><div class="settings-fields"><label>الدولة<input data-pref="country" type="text" maxlength="80" autocomplete="country-name" placeholder="اكتب الدولة يدوياً"></label><label>المدينة<input data-pref="city" type="text" maxlength="80" autocomplete="address-level2" placeholder="اكتب المدينة يدوياً"></label><button class="settings-button settings-outline" type="button" disabled>استخدام الموقع الحالي — قريباً</button><label>طريقة حساب المواقيت<select data-pref="prayerMethod"><option value="unset">لم يتم الاختيار</option value="mwl">رابطة العالم الإسلامي</option><option value="egyptian">الهيئة المصرية العامة للمساحة</option><option value="ummalqura">جامعة أم القرى، مكة</option><option value="isna">الجمعية الإسلامية لأمريكا الشمالية</option></select></label><label>تنسيق الوقت<select data-pref="timeFormat"><option value="24">٢٤ ساعة</option><option value="12">١٢ ساعة</option></select></label></div></section>
+            <section data-settings-section="appearance" hidden><div class="settings-fields"><label>المظهر<select data-pref="theme"><option value="light">فاتح</option><option value="dark">داكن</option><option value="system">حسب الجهاز</option></select></label><label>حجم خط الواجهة<select data-pref="fontSize"><option value="small">صغير</option><option value="medium">متوسط</option><option value="large">كبير</option></select></label><div class="settings-font-preview"><strong>معاينة حجم خط الواجهة</strong><p>صلاتك وقرآنك وأذكارك في مكان واحد</p></div><label>اللغة<select data-pref="language"><option value="ar">العربية</option><option disabled>الإنجليزية — قريباً</option></select></label><p>العربية هي اللغة المتاحة حالياً. ستُفعّل اللغات الأخرى عند اكتمال ترجمة الواجهة.</p></div></section>
+            <section data-settings-section="quran" hidden><div class="settings-fields"><label>حجم خط الآيات <output id="settings-verse-value"></output><input data-pref="verseSize" type="range" min="20" max="44" step="1"></label><p class="quran-verse-text settings-font-preview">معاينة حجم خط الآيات</p><p>هذا نص معاينة فقط. عرض نص الآيات لم يُضف بعد؛ سيُستخدم الحجم المختار في مساحة الآيات عند إتاحتها، ولن يغيّر حجم خط الواجهة.</p><label>القارئ المفضّل<select disabled><option>اختيار القارئ — قريباً</option></select></label><label class="settings-toggle">تكرار التلاوة — قريباً<input type="checkbox" disabled></label><label class="settings-toggle">التشغيل المتواصل — قريباً<input type="checkbox" disabled></label><p>خيارات الصوت غير متاحة حتى يُجهّز مشغّل وتُربط تسجيلات معتمدة.</p></div></section>
+            <section data-settings-section="privacy" hidden><label class="settings-toggle">حفظ محادثات جمال على هذا الجهاز<input data-pref="saveChats" type="checkbox"></label><p>الحفظ محلي ولا تتم مزامنته مع حساب. عند تعطيله، تبقى الرسائل الجديدة لهذه الجلسة فقط، ويبقى السجل السابق محفوظاً دون حذف تلقائي.</p><button class="settings-button settings-outline" id="settings-clear-chats" type="button">مسح سجل المحادثات</button><button class="settings-button settings-outline" id="settings-reset" type="button">إعادة ضبط التفضيلات المحلية</button></section>
+            <section data-settings-section="contact" hidden><span class="settings-badge">غير متاح بعد</span><p>لم تُضف وسيلة تواصل معتمدة لموقع Jamal aldin حالياً.</p></section>
+            <section data-settings-section="report" hidden><span class="settings-badge">غير متاح بعد</span><p>خدمة إرسال البلاغات غير مرتبطة حالياً.</p><button class="settings-button" type="button" disabled>إرسال بلاغ — غير متاح</button></section>
+            <section data-settings-section="about" hidden><h2 dir="ltr" lang="en">Jamal aldin</h2><p>واجهة عربية قيد التطوير للصلاة والقرآن ومساعد جمال. الحسابات والاشتراكات وخدمة الذكاء الاصطناعي غير متصلة حالياً.</p></section>
+            <section data-settings-section="policy" hidden><span class="settings-badge">قيد الإعداد</span><p>سياسة الخصوصية النهائية غير متاحة بعد. تُحفظ تفضيلاتك ومتابعة الصلاة والمحادثات المفعّلة محلياً على هذا الجهاز دون مزامنة حساب.</p></section>
+            <section data-settings-section="terms" hidden><span class="settings-badge">قيد الإعداد</span><p>شروط الاستخدام النهائية غير متاحة بعد.</p></section>
+          </div>
+        </div>
+        <dialog class="settings-confirm" id="settings-confirm" aria-labelledby="settings-confirm-title" aria-describedby="settings-confirm-description"><h2 id="settings-confirm-title"></h2><p id="settings-confirm-description"></p><div><button class="settings-button" id="settings-confirm-yes" type="button">تأكيد</button><button class="settings-button settings-outline" id="settings-confirm-cancel" type="button">إلغاء</button></div></dialog>
       </section>
     </main>
     <nav class="bottom-nav" id="bottom-nav" aria-label="التنقل بين الأقسام">

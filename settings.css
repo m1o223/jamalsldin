@@ -1,0 +1,52 @@
+:root { --surface: #F7F4ED; --paper: #FFFFFF; --ink: #163F36; --primary: #163F36; --primary-rgb: 22,63,54; --line-rgb: 22,63,54; --on-primary: #FFFFFF; --ui-font-size: 16px; --verse-font-size: 28px; color-scheme: light; font-size: var(--ui-font-size); }
+:root[data-theme="dark"] { --surface: #10251F; --paper: #1B342B; --ink: #F7F4ED; --line-rgb: 223,235,228; color-scheme: dark; }
+.quran-verse-text { font-size: var(--verse-font-size); line-height: 1.9; }
+.quran-tabs button[aria-selected="true"] { color: var(--on-primary); }
+.prayer-check-circle svg { stroke: var(--primary); }
+.google-button { background: #FFFFFF; color: #000000; color-scheme: light; }
+.apple-button { background: #000000; color: #FFFFFF; }
+.chat-composer textarea, .chat-input-measure { font-size: max(16px,1rem); }
+.settings-page { position: absolute; inset: 0; background: var(--surface); color: var(--ink); overflow-y: auto; overflow-x: hidden; }
+.settings-header { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; gap: 12px; padding: calc(14px + env(safe-area-inset-top,0px)) 20px 14px; background: var(--surface); border-bottom: 1px solid rgba(var(--line-rgb),.12); }
+.page-stage .settings-header h1 { flex: 1; min-width: 0; font-size: 1.4rem; font-weight: 600; text-align: right; line-height: 1.65; }
+.settings-content { width: 100%; max-width: 800px; margin-inline: auto; padding: 24px 20px calc(116px + env(safe-area-inset-bottom,0px)); }
+.settings-account-card { display: flex; align-items: center; gap: 16px; padding: 24px; border: 1px solid rgba(var(--line-rgb),.18); border-radius: 24px; margin-bottom: 28px; }
+.settings-avatar { display: grid; place-items: center; flex-shrink: 0; width: 56px; height: 56px; border: 1px solid rgba(var(--line-rgb),.3); border-radius: 50%; overflow: hidden; }
+.settings-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.settings-avatar svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.settings-account-card h2 { margin: 0 0 6px; font-size: 1.1rem; font-weight: 500; }
+.settings-account-card p { margin: 0; overflow-wrap: anywhere; }
+.settings-link { min-height: 44px; padding: 8px 0; border: 0; background: none; color: var(--ink); font: inherit; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.settings-group { margin-bottom: 26px; border: 1px solid rgba(var(--line-rgb),.18); border-radius: 24px; overflow: hidden; }
+.settings-group h2 { margin: 0; padding: 18px 20px 10px; font-size: .875rem; font-weight: 500; }
+.settings-row { display: grid; grid-template-columns: 24px minmax(0,1fr) 20px; align-items: center; gap: 14px; width: 100%; min-height: 66px; padding: 16px 20px; border: 0; border-top: 1px solid rgba(var(--line-rgb),.1); background: none; color: var(--ink); text-align: right; font: inherit; line-height: 1.7; cursor: pointer; }
+.settings-row svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.settings-row svg:last-child { width: 18px; }
+.settings-row:active { background: rgba(var(--line-rgb),.06); }
+.settings-content section[data-settings-section] { padding: 24px; border: 1px solid rgba(var(--line-rgb),.18); border-radius: 24px; }
+.settings-content p, .settings-confirm p { line-height: 1.9; margin-block: 12px 20px; overflow-wrap: anywhere; }
+.settings-content h2 { font-size: 1.2rem; font-weight: 500; }
+.settings-content h3 { font-size: 1.05rem; font-weight: 500; }
+.settings-fields { display: grid; gap: 22px; margin-top: 22px; }
+.settings-fields label { display: grid; gap: 10px; color: var(--ink); }
+.settings-content input, .settings-content select { color: var(--ink); background: var(--surface); border: 1px solid rgba(var(--line-rgb),.35); font: inherit; }
+.settings-content select { width: 100%; min-width: 0; min-height: 52px; padding: 10px 16px; border-radius: 16px; }
+.settings-content input[type="range"] { min-height: 44px; padding: 0; border: 0; accent-color: var(--ink); }
+.settings-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 58px; padding-block: 12px; border-bottom: 1px solid rgba(var(--line-rgb),.12); color: var(--ink); cursor: pointer; }
+.settings-toggle input { width: 24px; height: 24px; min-height: 24px; flex-shrink: 0; padding: 0; accent-color: var(--primary); cursor: pointer; }
+.settings-content fieldset { min-width: 0; margin: 20px 0; padding: 12px 18px; border: 1px solid rgba(var(--line-rgb),.2); border-radius: 20px; }
+.settings-content legend { padding-inline: 8px; }
+.settings-button { display: block; width: 100%; min-height: 52px; padding: 12px 18px; margin-block: 16px; border: 1px solid var(--primary); border-radius: 9999px; background: var(--primary); color: #FFFFFF; font: inherit; line-height: 1.7; cursor: pointer; }
+.settings-outline { border-color: rgba(var(--line-rgb),.5); background: none; color: var(--ink); }
+.settings-button:disabled, .settings-content input:disabled, .settings-content select:disabled { opacity: .6; cursor: not-allowed; }
+.settings-badge { display: inline-block; padding: 4px 12px; border: 1px solid #B69B63; border-radius: 9999px; font-size: .8125rem; }
+.settings-notice, .settings-font-preview { padding: 18px; border: 1px solid rgba(var(--line-rgb),.2); border-radius: 20px; }
+.settings-status { padding: 12px 16px; border: 1px solid #B69B63; border-radius: 16px; }
+.settings-danger-zone { margin-top: 42px; padding-top: 20px; border-top: 1px solid rgba(var(--line-rgb),.25); }
+.settings-confirm { width: min(440px,calc(100% - 32px)); max-height: calc(100dvh - 48px); padding: 26px; border: 1px solid rgba(var(--line-rgb),.3); border-radius: 26px; background: var(--surface); color: var(--ink); overflow-y: auto; }
+.settings-confirm::backdrop { background: rgba(0,0,0,.45); }
+.settings-confirm h2 { margin: 0; font-size: 1.2rem; line-height: 1.7; }
+.settings-confirm div { display: grid; gap: 10px; }
+.settings-confirm button { margin: 0; }
+.settings-content button:focus-visible, .settings-content select:focus-visible, .settings-header button:focus-visible { outline: 2px solid #B69B63; outline-offset: 3px; }
+@media (max-width: 360px) { .settings-content { padding-inline: 16px; } .settings-content section[data-settings-section], .settings-account-card { padding: 20px 16px; } .settings-row { padding-inline: 16px; gap: 12px; } .home-toolbar { gap: 8px; } .home-toolbar .home-account { gap: 6px; font-size: .875rem; } }

@@ -28,31 +28,40 @@
           list: () => transaction('threads', 'readonly', store => store.getAll()),
           save: thread => transaction('threads', 'readwrite', store => store.put(thread)),
           active: () => transaction('meta', 'readonly', store => store.get('active')),
-          select: id => transaction('meta', 'readwrite', store => store.put(id, 'active'))
+          select: id => transaction('meta', 'readwrite', store => store.put(id, 'active')),
+          clear: () => new Promise((done, fail) => {
+            const tx = db.transaction(['threads', 'meta'], 'readwrite');
+            tx.objectStore('threads').clear(); tx.objectStore('meta').clear();
+            tx.oncomplete = () => done(); tx.onerror = tx.onabort = () => fail(tx.error || new Error('Clear failed'));
+          })
         });
       };
     });
   }
-  function createChatStore({ repository = null, makeId, now = () => Date.now(), onWarning = () => {} }) {
+  function createChatStore({ repository = null, makeId, now = () => Date.now(), onWarning = () => {}, canPersist = () => true }) {
     const threads = new Map();
     let activeId = null;
     let queue = Promise.resolve();
+    const temporary = new Set();
+    const privateMessages = new Set();
     const id = makeId || (() => root.crypto.randomUUID());
     function persist(thread) {
-      if (!repository) return;
+      if (!repository || !canPersist() || temporary.has(thread.id)) return;
       // Snapshot before queuing: later sends/switches cannot overwrite an older transaction.
-      const snapshot = { ...thread, messages: thread.messages.map(message => ({ ...message, attachments: message.attachments.map(item => ({ ...item })) })) };
-      queue = queue.then(() => repository.save(snapshot)).catch(onWarning);
+      const snapshot = { ...thread, messages: thread.messages.filter(message => !privateMessages.has(message.id)).map(message => ({ ...message, attachments: message.attachments.map(item => ({ ...item })) })) };
+      if (!thread.topic) snapshot.title = snapshot.messages[0]?.text.slice(0, 52) || (snapshot.messages[0]?.attachments.some(item => item.kind === 'audio') ? 'رسالة صوتية' : snapshot.messages.length ? 'مرفقات' : 'محادثة جديدة');
+      queue = queue.then(() => { if (canPersist()) return repository.save(snapshot); }).catch(onWarning);
     }
     function select(threadId) {
       if (!threads.has(threadId)) return null;
       activeId = threadId;
-      if (repository) queue = queue.then(() => repository.select(threadId)).catch(onWarning);
+      if (repository && canPersist() && !temporary.has(threadId)) queue = queue.then(() => { if (canPersist()) return repository.select(threadId); }).catch(onWarning);
       return threads.get(activeId);
     }
     function create(topic = null, title = 'محادثة جديدة') {
       const thread = { id: id(), title, topic, createdAt: now(), updatedAt: now(), messages: [] };
       threads.set(thread.id, thread);
+      if (!canPersist()) temporary.add(thread.id);
       persist(thread);
       select(thread.id);
       return thread;
@@ -84,13 +93,14 @@
       if (!text && !attachments.length) return null;
       const thread = threads.get(activeId);
       const message = { id: id(), role: 'user', text, attachments: attachments.map(item => ({ ...item })), createdAt: now() };
+      if (!canPersist()) privateMessages.add(message.id);
       thread.messages.push(message);
       thread.updatedAt = now();
       if (thread.messages.length === 1 && !thread.topic) thread.title = text.slice(0, 52) || (attachments.some(item => item.kind === 'audio') ? 'رسالة صوتية' : 'مرفقات');
       persist(thread);
       return message;
     }
-    return { load, create, select, send, active: () => threads.get(activeId), list: () => [...threads.values()].sort((a, b) => b.updatedAt - a.updatedAt), flush: () => queue };
+    return { load, create, select, send, active: () => threads.get(activeId), isTemporary: () => temporary.has(activeId), list: () => [...threads.values()].sort((a, b) => b.updatedAt - a.updatedAt), flush: () => queue };
   }
   function createVoiceRecorder({ getUserMedia, Recorder, BlobType = root.Blob, now = () => Date.now(), onState = () => {}, onReady = () => {}, onError = () => {} }) {
     let generation = 0;

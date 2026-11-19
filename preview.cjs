@@ -2,7 +2,7 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
-const files = new Set(['index.html', 'style.css', 'script.js', 'quran-data.js', 'quran.js', 'prayer-data.js', 'prayer.js', 'chat-core.js', 'chat.js', 'mark.svg']);
+const files = new Set(['index.html', 'style.css', 'script.js', 'quran-data.js', 'quran.js', 'prayer-data.js', 'prayer.js', 'chat-core.js', 'chat.js', 'preferences.js', 'settings.js', 'settings.css', 'mark.svg']);
 const types = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml'};
 http.createServer((req, res) => {
   if (!['GET', 'HEAD'].includes(req.method)) {res.writeHead(405);res.end();return;}

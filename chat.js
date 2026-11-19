@@ -18,6 +18,7 @@
   const draftURLs = new Set();
   let store;
   let loading;
+  let repository;
   let renderedId;
   let entered = false;
   let activation = 0;
@@ -170,14 +171,21 @@
     el('chat-latest').hidden = true;
     requestAnimationFrame(() => messages.setAttribute('aria-live', 'polite'));
     updateControls();
+    renderPrivacyNote();
+  }
+  function renderPrivacyNote() {
+    const saving = root.JAMAL_PREFS?.get().saveChats !== false;
+    el('chat-local-note').textContent = !saving ? 'الحفظ متوقف. الرسائل الجديدة لهذه الجلسة فقط، والسجل السابق باقٍ.' : store?.isTemporary() ? 'هذه المحادثة مؤقتة لهذه الجلسة. ابدأ محادثة جديدة لحفظ الرسائل.' : 'محفوظة على هذا الجهاز فقط';
+  }
+  function newStore() {
+    return core.createChatStore({ repository, makeId, canPersist: () => root.JAMAL_PREFS?.get().saveChats !== false, onWarning: () => feedback('تعذّر حفظ التحديث على الجهاز. تبقى المحادثة متاحة خلال هذه الجلسة.') });
   }
   async function initialize() {
     if (loading) return loading;
     loading = (async () => {
-      let repository;
       try { repository = await core.openRepository(root.indexedDB); }
       catch { feedback('الحفظ المحلي غير متاح. ستبقى المحادثات والمرفقات خلال هذه الجلسة فقط.'); }
-      store = core.createChatStore({ repository, makeId, onWarning: () => feedback('تعذّر حفظ التحديث على الجهاز. تبقى المحادثة متاحة خلال هذه الجلسة.') });
+      store = newStore();
       await store.load();
     })();
     return loading;
@@ -364,6 +372,21 @@
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { voice.cancel(); pauseAudio(layout); } });
   root.addEventListener('pagehide', () => { voice.cancel(); saveDraft(); pauseAudio(layout); });
+  root.addEventListener('jamal:preferenceschange', () => { renderPrivacyNote(); if (entered) resizeInput(); });
+  Object.defineProperty(root, 'JAMAL_CHAT_UI', { value: {
+    async clearHistory() {
+      voice.cancel();
+      if (loading) await loading;
+      if (store) await store.flush();
+      if (!repository) repository = await core.openRepository(root.indexedDB);
+      await repository.clear();
+      pauseAudio(layout); revoke(messageURLs); revoke(draftURLs);
+      drafts.clear(); positions.clear(); messages.replaceChildren(); el('chat-drafts').replaceChildren();
+      input.value = ''; renderedId = null;
+      store = newStore(); await store.load(); loading = Promise.resolve();
+      renderThread();
+    }
+  } });
   updateControls();
   if (getRoute() === 'ai') enter(getAITopic());
 })(globalThis);

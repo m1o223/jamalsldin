@@ -62,7 +62,7 @@
     const name = document.createElement('span');
     name.textContent = prayer.name;
     const time = document.createElement('bdi');
-    time.textContent = data.preview.times[prayer.key];
+    time.textContent = root.JAMAL_PREFS ? root.JAMAL_PREFS.formatTime(data.preview.times[prayer.key], root.JAMAL_PREFS.get().timeFormat) : data.preview.times[prayer.key];
     const circle = document.createElement('span');
     circle.className = 'prayer-check-circle';
     circle.setAttribute('aria-hidden', 'true');
@@ -75,7 +75,7 @@
     button.append(name, time, circle);
     button.addEventListener('click', () => renderTracker(model.toggle(prayer.key)));
     checklist.append(button);
-    return { key: prayer.key, button };
+    return { key: prayer.key, button, time };
   });
   function renderTracker(state) {
     const today = document.getElementById('tracker-date');
@@ -86,6 +86,9 @@
     document.getElementById('tracker-storage-note').hidden = state.canSave;
   }
   renderTracker(model.sync());
+  root.addEventListener('jamal:preferenceschange', event => {
+    rows.forEach(({ key, time }) => { time.textContent = root.JAMAL_PREFS.formatTime(data.preview.times[key], event.detail.timeFormat); });
+  });
   let midnightTimer;
   function refreshDay() {
     renderTracker(model.sync());

@@ -140,7 +140,15 @@ for (const navIndex of [0, 1]) {
   assert.equal(app.el('internal-shell').dataset.section, navIndex === 0 ? 'home' : 'quran');
   assert.equal(app.el('bottom-nav').hidden, false);
 }
-assert.equal(app.el('settings-entry').hidden, true, 'preview stays guest');
+assert.equal(app.el('settings-entry').hidden, false, 'settings available to guests');
+app.el('settings-entry').fire();
+assert.equal(app.context.location.hash, '#settings');
+assert.equal(app.el('settings-page').hidden, false);
+assert.equal(app.el('account-label').textContent, 'تسجيل الدخول', 'preview remains guest');
+app.context.JAMAL_PREFS = { get: () => ({ timeFormat: '12' }), formatTime: require('../preferences.js').formatTime };
+app.context.dispatchEvent({ type: 'jamal:preferenceschange', detail: { timeFormat: '12' } });
+assert.equal(app.el('upcoming-time').textContent, '03:45 م');
+assert.equal(app.el('prayer-checklist').children[2].children[1].textContent, '03:45 م', 'time-format preference reaches both fixture views');
 const today = new Date(app.clock.time);
 app.clock.time = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).getTime();
 [...app.timers.values()].at(-1)();

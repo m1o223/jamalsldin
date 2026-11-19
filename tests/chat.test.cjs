@@ -9,7 +9,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 function repository() {
   const records = new Map();
   let active;
-  return { list: async () => structuredClone([...records.values()]), save: async thread => { records.set(thread.id, structuredClone(thread)); }, active: async () => active, select: async id => { active = id; } };
+  return { list: async () => structuredClone([...records.values()]), save: async thread => { records.set(thread.id, structuredClone(thread)); }, active: async () => active, select: async id => { active = id; }, clear: async () => { records.clear(); active = null; } };
 }
 class Recorder {
   static instances = [];
@@ -44,6 +44,20 @@ async function modelAndVoice() {
   assert.equal(restored.active().messages[0].text, '<script>literal text</script>');
   assert.equal(await restored.active().messages[1].attachments[0].blob.text(), 'image');
   assert.ok(restored.list().every(thread => thread.messages.every(message => message.role === 'user')), 'no fake assistant replies');
+  let saving = true;
+  const guarded = core.createChatStore({ repository: repo, makeId, canPersist: () => saving });
+  await guarded.load(); guarded.select(first); await guarded.flush();
+  saving = false; guarded.send('private text while disabled'); await guarded.flush();
+  assert.equal((await repo.list()).find(thread => thread.id === first).messages.length, 2, 'old record is not overwritten while saving disabled');
+  const temporaryId = guarded.create().id;
+  guarded.send('temporary conversation'); await guarded.flush();
+  assert.ok(!(await repo.list()).some(thread => thread.id === temporaryId));
+  saving = true; guarded.send('still belongs to the temporary conversation'); await guarded.flush();
+  assert.ok(!(await repo.list()).some(thread => thread.id === temporaryId), 'reenabling never silently persists a temporary conversation');
+  guarded.select(first); guarded.send('future saved text'); await guarded.flush();
+  const savedMessages = (await repo.list()).find(thread => thread.id === first).messages;
+  assert.equal(savedMessages.length, 3);
+  assert.ok(!savedMessages.some(message => message.text.includes('private text')), 'disabled-period messages stay session-only after reenabling');
   let warning = 0;
   const failing = core.createChatStore({ repository: { list: async () => [], active: async () => null, save: async () => { throw Error('quota'); }, select: async () => {} }, makeId, onWarning: () => warning++ });
   await failing.load(); failing.send('يبقى في الذاكرة'); await failing.flush();
@@ -117,6 +131,7 @@ async function interfaceFlow() {
     getRoute: () => route, getAITopic: () => null,
     document: {
       hidden: false, getElementById: el,
+      querySelector: () => el('chat-local-note'),
       createElement: tag => new Element('', tag), createElementNS: (_namespace, tag) => new Element('', tag),
       addEventListener(type, callback) { listeners.set('document:' + type, callback); }
     },
@@ -214,6 +229,9 @@ async function interfaceFlow() {
   route = 'home'; listeners.get('jamal:routechange')({ detail: { route } }); await flush();
   assert.equal(el('chat-recording').hidden, true, 'leaving cancels recording');
   assert.equal(device.track.stopped, true);
+  await context.JAMAL_CHAT_UI.clearHistory(); await flush();
+  assert.equal(el('chat-messages').children.length, 0, 'confirmed history clearing removes the in-memory conversation too');
+  assert.equal(el('chat-drafts').children.length, 0);
 }
 (async () => {
   await modelAndVoice(); await interfaceFlow();

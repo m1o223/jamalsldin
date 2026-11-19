@@ -26,7 +26,7 @@ const settingsEntry = document.getElementById('settings-entry');
 function renderAccount() {
   const user = ACCOUNT_STATE.user;
   document.getElementById('account-label').textContent = user ? 'الملف الشخصي' : 'تسجيل الدخول';
-  settingsEntry.hidden = !user;
+  settingsEntry.hidden = false;
   const photo = document.getElementById('account-photo');
   document.getElementById('account-icon').toggleAttribute('hidden', Boolean(user?.avatarUrl));
   photo.hidden = !user?.avatarUrl;
@@ -42,6 +42,7 @@ let currentRouteKey = null;
 let lastMain = 'home';
 let readyFrame;
 let aiReturnRoute = 'home';
+let loginReturnRoute = 'home';
 
 emailButton.addEventListener('click', () => {
   options.hidden = true;
@@ -52,11 +53,12 @@ emailButton.addEventListener('click', () => {
 
 function getRoute() {
   const route = window.location.hash.slice(1).split('?')[0] || window.location.pathname.replace(/^\/+|\/+$/g, '');
-  if (Object.hasOwn(detailNames, route) && !ACCOUNT_STATE.user) return 'login';
+  if (route === 'profile' && !ACCOUNT_STATE.user) return 'login';
   return mainRoutes.includes(route) || Object.hasOwn(detailNames, route) || route === 'login' ? route : 'start';
 }
 
 function currentHeading() {
+  if (currentRoute === 'settings') return document.getElementById('settings-title');
   if (currentRoute === 'prayer') {
     return document.querySelector('#page-prayer [data-prayer-view]:not([hidden]) [data-view-heading]');
   }
@@ -94,6 +96,7 @@ function renderScreen() {
       options.hidden = false;
       panel.hidden = true;
       emailButton.setAttribute('aria-expanded', 'false');
+      accountReturn.textContent = loginReturnRoute === 'settings' ? 'الرجوع للإعدادات' : 'الرجوع للرئيسية';
       window.scrollTo(0, 0);
       accountReturn.focus({ preventScroll: true });
     }
@@ -104,7 +107,8 @@ function renderScreen() {
   shell.dataset.section = lastMain;
   const isDetail = Object.hasOwn(detailNames, route);
   track.hidden = isDetail;
-  detail.hidden = !isDetail;
+  detail.hidden = !isDetail || route === 'settings';
+  document.getElementById('settings-page').hidden = route !== 'settings';
   if (isDetail) detailTitle.textContent = detailNames[route];
   mainRoutes.forEach(name => {
     const page = document.getElementById(`page-${name}`);
@@ -140,6 +144,7 @@ function renderAIContext() {
 }
 
 function navigate(route, topic = null) {
+  if (route === 'login') loginReturnRoute = currentRoute === 'settings' ? 'settings' : 'home';
   const hash = `#${route}${route === 'ai' && Object.hasOwn(globalThis.JAMAL_PRAYER_DATA.topics, topic) ? `?topic=${topic}` : ''}`;
   if (window.location.hash === hash) return;
   window.history.pushState(route === 'ai' ? { chatEntry: true, aiFrom: currentRoute === 'ai' ? aiReturnRoute : currentRoute } : null, '', hash);
@@ -148,10 +153,8 @@ function navigate(route, topic = null) {
 
 continueButton.addEventListener('click', () => navigate('home'));
 accountEntry.addEventListener('click', () => navigate(ACCOUNT_STATE.user ? 'profile' : 'login'));
-settingsEntry.addEventListener('click', () => {
-  if (ACCOUNT_STATE.user) navigate('settings');
-});
-accountReturn.addEventListener('click', () => navigate('home'));
+settingsEntry.addEventListener('click', () => navigate('settings'));
+accountReturn.addEventListener('click', () => navigate(loginReturnRoute));
 navButtons.forEach(button => button.addEventListener('click', () => navigate(button.dataset.route)));
 document.getElementById('detail-back').addEventListener('click', () => navigate(lastMain));
 document.getElementById('ai-back').addEventListener('click', () => {
@@ -161,3 +164,12 @@ document.getElementById('ai-back').addEventListener('click', () => {
 window.addEventListener('hashchange', renderScreen);
 window.addEventListener('popstate', renderScreen);
 renderScreen();
+
+function renderPreferredTimes() {
+  const format = globalThis.JAMAL_PREFS?.get().timeFormat || '24';
+  const time = value => globalThis.JAMAL_PREFS ? globalThis.JAMAL_PREFS.formatTime(value, format) : value;
+  document.getElementById('upcoming-time').textContent = time(PRAYER_PREVIEW.times[PRAYER_PREVIEW.nextPrayer.key]);
+  document.querySelectorAll('[data-prayer]').forEach(row => { row.querySelector('bdi').textContent = time(PRAYER_PREVIEW.times[row.dataset.prayer]); });
+}
+renderPreferredTimes();
+window.addEventListener('jamal:preferenceschange', renderPreferredTimes);
