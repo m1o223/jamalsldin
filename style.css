@@ -447,11 +447,20 @@ body.is-internal { overflow: hidden; }
 .chat-offline { flex-shrink: 0; margin: 0 0 9px; padding-inline: 8px; font-size: .75rem; line-height: 1.7; text-align: center; opacity: .8; }
 .chat-feedback { min-height: 0; max-height: 48px; overflow-y: auto; margin: 0 4px 10px; font-size: .8125rem; line-height: 1.8; }
 .chat-composer-wrap { position: relative; flex-shrink: 0; }
-.chat-composer { display: flex; align-items: flex-end; gap: 3px; padding: 7px; border: 1px solid rgba(22,63,54,.32); border-radius: 30px; }
-.chat-composer textarea { flex: 1; width: 0; min-width: 0; min-height: 26px; max-height: 144px; margin-block: 9px; padding: 0 3px; border: 0; border-radius: 0; outline: none; resize: none; background: none; color: #163F36; font: inherit; font-size: 16px; line-height: 26px; }
+.chat-composer { position: relative; height: 60px; min-height: 60px; padding: 7px; border: 1px solid rgba(22,63,54,.24); border-radius: 9999px; background: #FFFFFF; overflow: hidden; transition: height 120ms cubic-bezier(.4,0,.2,1) 100ms, border-radius 0s 220ms; }
+.chat-composer.is-expanded { border-radius: 30px; transition: height 220ms cubic-bezier(.4,0,.2,1), border-radius 0s; }
+.chat-composer textarea, .chat-input-measure { font: inherit; font-size: 16px; line-height: 26px; white-space: pre-wrap; overflow-wrap: break-word; }
+.chat-composer textarea { position: absolute; top: 16px; right: 60px; left: 108px; width: auto; min-width: 0; min-height: 26px; height: 26px; max-height: 144px; margin: 0; padding: 0; border: 0; border-radius: 0; outline: none; resize: none; background: #FFFFFF; color: #163F36; text-align: right; direction: rtl; transition: right 100ms ease, left 100ms ease, height 100ms ease, top 220ms ease; }
+.chat-composer.is-expanded textarea { top: 14px; right: 18px; left: 18px; transition: right 100ms ease 120ms, left 100ms ease 120ms, height 220ms ease, top 220ms ease; }
+.chat-input-measure { position: absolute; top: 0; left: 0; visibility: hidden; pointer-events: none; height: auto; margin: 0; padding: 0; border: 0; }
+.chat-composer .chat-icon-button { position: absolute; bottom: 7px; }
+.chat-composer #chat-plus { right: 7px; }
+.chat-composer #chat-mic { left: 55px; }
+.chat-composer #chat-send { left: 7px; }
 .chat-composer textarea::placeholder { color: #163F36; opacity: .6; }
-.chat-composer:focus-within { border-color: #163F36; }
+.chat-composer:focus-within { border-color: rgba(22,63,54,.4); background: #FFFFFF; }
 .chat-send { background: #163F36; color: #FFFFFF; }
+.chat-composer .chat-send:disabled { background: rgba(22,63,54,.16); color: #163F36; opacity: 1; }
 .chat-send:active:not(:disabled) { background: #163F36; opacity: .8; }
 .chat-drafts { display: grid; gap: 8px; min-height: 0; max-height: min(180px,calc(var(--chat-height,100dvh) * .2)); margin-bottom: 10px; overflow-y: auto; overscroll-behavior: contain; }
 .is-recording .chat-drafts { display: none; }
@@ -476,4 +485,5 @@ body.is-internal { overflow: hidden; }
 .chat-history-list { display: grid; gap: 10px; }
 .chat-history-item { width: 100%; min-height: 52px; padding: 12px 16px; border: 1px solid rgba(22,63,54,.18); border-radius: 18px; background: none; color: #163F36; text-align: right; overflow-wrap: anywhere; font: inherit; font-size: .9375rem; line-height: 1.7; cursor: pointer; }
 .chat-history-item[aria-current="true"] { border-color: #163F36; background: rgba(22,63,54,.06); }
-@media (max-width: 360px) { .chat-composer { gap: 0; padding: 5px; } .chat-composer .chat-icon-button { width: 40px; height: 44px; padding: 9px; } .chat-footer { padding-inline: 10px; } .chat-message { max-width: 92%; } }
+@media (max-width: 360px) { .chat-composer .chat-icon-button { width: 40px; height: 44px; padding: 9px; } .chat-composer #chat-mic { left: 51px; } .chat-composer:not(.is-expanded) textarea { right: 55px; left: 99px; } .chat-footer { padding-inline: 10px; } .chat-message { max-width: 92%; } }
+@media (prefers-reduced-motion: reduce) { .chat-composer, .chat-composer.is-expanded, .chat-composer textarea, .chat-composer.is-expanded textarea { transition: none; } }

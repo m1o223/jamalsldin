@@ -81,7 +81,8 @@ async function interfaceFlow() {
       this.id = id; this.tagName = tagName; this.children = []; this.events = {}; this.hidden = false;
       this.value = ''; this.attributes = {}; this.scrollTop = 0; this.scrollHeight = 26; this.clientHeight = 500;
       this.offsetHeight = 140; this.style = { setProperty(key, value) { this[key] = value; } };
-      this.classList = { toggle() {} }; this.open = false;
+      const classes = new Set();
+      this.classList = { toggle(name, enabled) { if (enabled) classes.add(name); else classes.delete(name); }, contains: name => classes.has(name) }; this.open = false;
     }
     append(...items) { this.children.push(...items); }
     replaceChildren(...items) { this.children = items; }
@@ -128,6 +129,22 @@ async function interfaceFlow() {
   await flush();
   assert.equal(el('chat-send').disabled, true);
   assert.equal(el('chat-welcome').hidden, false);
+  assert.equal(el('chat-composer').style.height, '60px');
+  el('chat-input').fire('focus'); await flush();
+  assert.equal(el('chat-composer').classList.contains('is-expanded'), true);
+  assert.equal(el('chat-composer').style.height, '120px', 'focus expands before typing');
+  assert.equal(el('chat-send').disabled, true, 'focus alone cannot enable send');
+  el('chat-input').fire('blur');
+  assert.equal(el('chat-composer').style.height, '60px', 'empty blur collapses');
+  el('chat-input-measure').scrollHeight = 390;
+  el('chat-input').value = 'رسالة طويلة\n'.repeat(60); el('chat-input').fire('input');
+  assert.equal(el('chat-composer').style.height, '216px');
+  assert.equal(el('chat-input').style.overflowY, 'auto');
+  el('chat-input').fire('blur');
+  assert.equal(el('chat-composer').classList.contains('is-expanded'), true, 'unsent draft stays expanded after blur');
+  el('chat-input').value = ''; el('chat-input-measure').scrollHeight = 26; el('chat-input').fire('input');
+  assert.equal(el('chat-composer').style.height, '60px');
+  el('chat-input').fire('focus');
   el('chat-input').value = 'رسالة محلية'; el('chat-input').fire('input');
   assert.equal(el('chat-send').disabled, false);
   el('chat-composer').fire('submit'); await flush();
@@ -135,6 +152,10 @@ async function interfaceFlow() {
   assert.equal(el('chat-messages').children.length, 1);
   assert.equal(el('chat-messages').children[0].children[0].textContent, 'رسالة محلية');
   assert.equal(el('chat-send').disabled, true);
+  assert.equal(el('chat-input').value, '');
+  assert.equal(el('chat-composer').style.height, '120px', 'send with retained focus stays expanded');
+  el('chat-input').fire('blur');
+  assert.equal(el('chat-composer').style.height, '60px');
   await el('chat-menu').fire();
   assert.equal(el('chat-history').open, true);
   el('chat-new').fire(); await flush();
@@ -159,6 +180,7 @@ async function interfaceFlow() {
   assert.equal(el('chat-messages').children.length, 1);
   el('chat-composer').fire('submit'); await flush();
   assert.equal(el('chat-messages').children.length, 2);
+  assert.equal(el('chat-composer').style.height, '60px', 'unfocused send leaves an empty capsule');
   assert.equal(el('chat-messages').children[1].children[0].children[1].tagName, 'audio');
   el('chat-scroll').scrollTop = 100;
   el('chat-input').value = 'قراءة رسائل قديمة'; el('chat-input').fire('input');
@@ -168,6 +190,22 @@ async function interfaceFlow() {
   viewport.height = 380; viewport.offsetTop = 12; viewport.resize(); await flush();
   assert.equal(el('chat-layout').style['--chat-height'], '380px');
   assert.equal(el('chat-layout').style['--chat-offset'], '12px');
+  for (let i = 0; i < 3; i++) {
+    el('chat-input').fire('focus'); viewport.height = 380; viewport.offsetTop = 12; viewport.resize(); await flush();
+    assert.equal(el('chat-composer').style.height, '120px');
+    el('chat-input').fire('blur'); viewport.height = 700; viewport.offsetTop = 0; viewport.resize(); await flush();
+    assert.equal(el('chat-layout').style['--chat-height'], '700px');
+    assert.equal(el('chat-layout').style['--chat-offset'], '0px');
+    assert.equal(el('chat-composer').style.height, '60px');
+    assert.equal(el('chat-send').disabled, true);
+  }
+  el('ai-title').parentElement = { offsetHeight: 111 };
+  el('chat-input').fire('focus'); viewport.height = 300; viewport.resize(); await flush();
+  assert.equal(el('chat-composer').style.height, '109px', 'short keyboard viewport leaves room outside the composer');
+  viewport.height = 700; viewport.resize(); await flush();
+  assert.equal(el('chat-composer').style.height, '120px', 'keyboard dismissal with focus keeps the empty field expanded');
+  el('chat-input').fire('blur');
+  assert.equal(el('chat-composer').style.height, '60px');
   listeners.get('jamal:routechange')({ detail: { route: 'ai', topic: 'wudu' } }); await flush();
   assert.equal(el('chat-input').value, 'أريد تعلّم الوضوء خطوة بخطوة');
   assert.equal(el('ai-topic-title').textContent, 'تعلّم الوضوء');
@@ -179,5 +217,5 @@ async function interfaceFlow() {
 }
 (async () => {
   await modelAndVoice(); await interfaceFlow();
-  console.log('PASS: local thread history/reload with Blobs, no fake replies, storage failure, negotiated voice recording/preview/cancel/denied/late permissions, composer/send/attachment removal/history, old-message scroll, keyboard viewport, microphone cleanup.');
+  console.log('PASS: local history/Blobs, voice lifecycle, attachments, focus expansion and empty blur, retained/long drafts, focused/unfocused send, repeated and short keyboard viewports, old-message scroll, microphone cleanup.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

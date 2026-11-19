@@ -8,6 +8,8 @@
   const scroll = el('chat-scroll');
   const messages = el('chat-messages');
   const input = el('chat-input');
+  const composer = el('chat-composer');
+  const inputMeasure = el('chat-input-measure');
   const history = el('chat-history');
   const attachmentMenu = el('chat-attachment-menu');
   const drafts = new Map();
@@ -21,6 +23,8 @@
   let activation = 0;
   let timer;
   let viewportFrame;
+  let inputFocused = false;
+  let stickDuringComposer = false;
   const makeId = () => root.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const reduceMotion = () => root.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const nearBottom = () => scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 96;
@@ -56,10 +60,20 @@
   }
   function resizeInput(preserveBottom = true) {
     const pinned = preserveBottom && nearBottom();
-    const max = Math.min(144, (root.visualViewport?.height || root.innerHeight) * .18);
-    input.style.height = 'auto';
-    input.style.height = `${Math.max(26, Math.min(input.scrollHeight, max))}px`;
-    input.style.overflowY = input.scrollHeight > max ? 'auto' : 'hidden';
+    const expanded = inputFocused || input.value.length > 0;
+    const visibleHeight = root.visualViewport?.height || root.innerHeight;
+    const headerHeight = el('ai-title').parentElement?.offsetHeight || 64;
+    // Leave room for the button row, footer notice and conversation on short screens.
+    const max = Math.max(26, Math.min(144, visibleHeight * .24, visibleHeight - headerHeight - 152));
+    inputMeasure.style.width = `${Math.max(1, (composer.clientWidth || layout.clientWidth || 300) - 36)}px`;
+    inputMeasure.textContent = input.value + '\u200b';
+    const textHeight = expanded ? Math.min(max, Math.max(Math.min(48, max), inputMeasure.scrollHeight)) : 26;
+    const height = expanded ? textHeight + 72 : 60;
+    if (composer.style.height !== `${height}px`) stickDuringComposer = pinned && !reduceMotion();
+    composer.classList.toggle('is-expanded', expanded);
+    composer.style.height = `${height}px`;
+    input.style.height = `${textHeight}px`;
+    input.style.overflowY = inputMeasure.scrollHeight > textHeight ? 'auto' : 'hidden';
     if (pinned) bottom();
   }
   function saveDraft() {
@@ -251,6 +265,13 @@
     else el('chat-latest').hidden = false;
   });
   scroll.addEventListener('scroll', () => { if (nearBottom()) el('chat-latest').hidden = true; });
+  ['wheel', 'touchstart', 'pointerdown'].forEach(type => scroll.addEventListener(type, () => { stickDuringComposer = false; }));
+  composer.addEventListener('transitionend', event => {
+    if (event.target === composer && event.propertyName === 'height') {
+      if (stickDuringComposer) bottom();
+      stickDuringComposer = false;
+    }
+  });
   el('chat-latest').addEventListener('click', () => bottom(true));
   function durationText(milliseconds) {
     const seconds = Math.floor(milliseconds / 1000);
@@ -292,6 +313,9 @@
       layout.style.setProperty('--chat-height', `${view?.height || root.innerHeight}px`);
       layout.style.setProperty('--chat-offset', `${view?.offsetTop || 0}px`);
       layout.classList.toggle('is-keyboard-open', root.innerHeight - (view?.height || root.innerHeight) > 120);
+      const previousHeight = composer.style.height;
+      resizeInput(false);
+      if (pinned && composer.style.height !== previousHeight) stickDuringComposer = !reduceMotion();
       if (pinned) bottom();
     });
   }
@@ -299,8 +323,12 @@
   root.visualViewport?.addEventListener('scroll', viewport);
   root.addEventListener('resize', viewport);
   root.addEventListener('pageshow', viewport);
-  input.addEventListener('focus', viewport);
-  if (root.ResizeObserver) new ResizeObserver(() => layout.style.setProperty('--chat-footer-height', `${el('chat-footer').offsetHeight}px`)).observe(el('chat-footer'));
+  input.addEventListener('focus', () => { inputFocused = true; resizeInput(); viewport(); });
+  input.addEventListener('blur', () => { inputFocused = false; resizeInput(); });
+  if (root.ResizeObserver) new ResizeObserver(() => {
+    layout.style.setProperty('--chat-footer-height', `${el('chat-footer').offsetHeight}px`);
+    if (stickDuringComposer) bottom();
+  }).observe(el('chat-footer'));
   async function enter(topic) {
     const token = ++activation;
     entered = true; viewport();
@@ -326,6 +354,7 @@
   }
   function leave() {
     entered = false; activation++;
+    inputFocused = false; resizeInput(false);
     voice.cancel(); saveDraft(); pauseAudio(layout); closeAttachments();
     if (history.open) history.close();
   }
